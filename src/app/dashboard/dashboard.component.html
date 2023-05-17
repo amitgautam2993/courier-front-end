@@ -1,0 +1,42 @@
+<mat-toolbar color="primary">
+  <span ><button mat-raised-button (click)="backtodashboard()"  disabled="true">Back</button> </span>
+  <span style="flex: 1; display: flex; justify-content: center;">
+    <h1>JC Enterprises</h1>
+</span>
+    <span ><button mat-raised-button color="accent"(click)="logout()">logout</button></span>
+</mat-toolbar>
+<div style="margin: 20px
+; display: flex;justify-content:end;">
+<button style="margin: 8px 8px 8px 0;" mat-raised-button color="primary" (click)="openAddCardDialog()">Add</button>
+<button style="margin: 8px 8px 8px 0;" mat-raised-button color="primary" (click)="getCards()">Refresh</button>
+<!-- <input matInput placeholder="Search Cards" [(ngModel)]="searchQuery" (keyup)="searchCards()">
+<button mat-button (click)="searchCards()">Search</button> -->
+<mat-form-field class="search-box">
+    
+    <input matInput type="text" placeholder="Search..." [(ngModel)]="searchQuery" 
+    (ngModelChange)="searchCards(searchQuery)">
+ 
+  </mat-form-field>
+</div>
+
+
+
+<div *ngIf="loading; else cardList" class="spinner-container" fxLayout="column" fxLayoutAlign="center center">
+
+    <mat-spinner></mat-spinner>
+  </div>
+  
+  <ng-template #cardList>
+    <div fxLayout="row wrap" fxLayoutGap="16px" fxLayoutAlign="start">
+      <mat-card fxFlex="calc(33.33% - 16px)" *ngFor="let card of filteredCards" (click)="onCardClick(card)" matRipple style="cursor: pointer;margin: 16px;">
+        <mat-card-header>
+          <mat-card-title>{{ card.Companyname }}</mat-card-title>
+          <mat-card-subtitle>{{ card.Ownername }}</mat-card-subtitle>
+          <mat-card-subtitle>{{ card.address }}</mat-card-subtitle>
+          <mat-card-subtitle>{{card.companyid}}</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+  </ng-template>
+  
+  

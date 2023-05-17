@@ -1,0 +1,31 @@
+
+
+.example-fill-remaining-space {
+    /* This fills the remaining space, by using flexbox. 
+       Every toolbar row uses a flexbox row layout. */
+    flex: 1 1 auto;
+  }
+//   .search-box {
+//    height: 63px;
+//    position: relative;
+//    top: 5px; /* apply desired height */
+//  }
+ 
+//  .search-box input {
+//    padding-bottom: 10px;
+//    height: 16px !important; /* apply desired height */
+//    font-size: 14px; /* adjust font size as needed */
+//  }
+.example-container { margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.example-container > * {
+  width: 100%;
+}
+mat-card{
+  max-width: 350px;
+  margin-bottom: 16px;
+
+}

@@ -1,0 +1,175 @@
+<mat-toolbar color="primary">
+    <span ><button mat-raised-button (click)="backtodashboard()" >Back</button> </span>
+
+    <span style="flex: 1; display: flex; justify-content: center;">
+        <h1>JC Enterprises</h1>
+    </span>
+    <span ><button mat-raised-button color="accent"(click)="logout()">logout</button></span>
+   
+   
+</mat-toolbar>
+<mat-toolbar fxLayout="row" fxLayoutAlign="start center">
+    
+   <span fxFlex="auto"><h6><b>Company Name:</b> </h6>{{cardData.Companyname}}</span>
+   <mat-divider vertical></mat-divider>
+   <span fxFlex="auto"><h6><b>Owner Name:</b></h6> {{cardData.Ownername}}</span>
+
+   <span fxFlex="auto"><h6><b>Company Address: </b></h6>{{cardData.address}}</span>
+   <span fxFlex="auto"><h6><b>Company Code : </b></h6>{{cardData.companyid}}</span>
+   <span fxFlex="auto"><h6><b>Company Email: </b></h6>{{cardData.email}}</span>
+
+</mat-toolbar>
+<div class="search-container">
+<form [formGroup]="dateRange">
+    <mat-form-field appearance="fill"  class="mat-form-field">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="picker1" formControlName="fromDate">
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="mat-form-field">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="picker2" formControlName="toDate">
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+  </form>
+  <!-- ... existing code ... -->
+  <button mat-raised-button (click)="createModal()">Create</button>
+  <button mat-raised-button (click)="generatePDF()">Export PDF</button>
+  <button mat-raised-button (click)="refresh()">Refresh</button>
+<mat-form-field appearance="fill" style="margin-left: 10px;" class="mat-form-field">
+    <mat-label>Search</mat-label>
+    <input matInput (input)="searchData()" [(ngModel)]="searchTerm" />
+  </mat-form-field>
+
+</div>
+<mat-divider></mat-divider>
+
+
+<table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>C/N NO.</th>
+        <th class="date-header">
+          Date
+          <button class="btn btn-link" style="top: 4px;" (click)="sortData()">
+            <mat-icon>swap_vert</mat-icon>
+          </button>
+        </th>
+        
+        <th>Destination</th>
+        <th>Type</th>
+        <th>PC</th>
+        <th>Rate</th>
+        <th>Weight</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let record of filteredData">
+        <tr style="cursor: pointer;" (mouseenter)="onRowHover(record, true)" (mouseleave)="onRowHover(record, false)">
+            <td>{{ record.id }}</td> <td>{{ record.cno }}</td>
+          <td>{{ record.date | date: 'mediumDate' }}</td>
+         
+          <td>{{ record.dummy1 }}</td>
+          <td>{{ record.dummy2 }}</td>
+          <td>{{ record.dummy3 }}</td>
+          <td>{{ record.dummy4 }}/-</td>
+          <td>{{ record.dummy5 }}gm</td>
+          <td>
+            {{ record.dummy6 }}.00
+            <ng-template #editButton>
+              <mat-icon class="mat-icon-small edit-icon" (click)="openModal(record)">edit</mat-icon>
+            </ng-template>
+            <ng-container *ngIf="selectedRow === record">
+              <ng-container *ngTemplateOutlet="editButton"></ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  
+  
+  
+  
+  
+  
+  
+  
+<!-- <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th class="date-header">
+            Date
+            <button class="btn btn-link" style="top: 4px;" (click)="sortData()">
+                <mat-icon>swap_vert</mat-icon>
+            </button>
+          </th>
+        <th>Name</th>
+        <th>Destination</th>
+        <th>Type</th>
+        <th>PC</th>
+        <th>Rate</th>
+        <th>Weight</th>
+        <th>Amount</th>
+        
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let record of filteredData" 
+      style="cursor: pointer;" (mouseover)="selectedRecord=record" (mouseout)="selectedRecord=null">
+        <td>{{ record.id }}</td>
+        <td>{{ record.date | date: 'mediumDate' }}</td>
+        <td>{{ record.name }}</td>
+        <td>{{ record.dummy1 }}</td>
+        <td>{{ record.dummy2 }}</td>
+        <td>{{ record.dummy3 }}</td>
+        <td>{{ record.dummy4 }}</td>
+        <td>{{ record.dummy5 }}</td>
+        <td>
+            {{ record.dummy6 }}
+            <ng-template #editButton>
+              <mat-icon class="mat-icon-small edit-icon" (click)="openModal(record)">edit</mat-icon>
+            </ng-template>
+            <ng-container *ngIf="selectedRecord === record && isHovered; else noEditButton">
+              <ng-container *ngTemplateOutlet="editButton"></ng-container>
+            </ng-container>
+          </td>
+      </tr>
+    </tbody>
+  </table> -->
+  
+  
+  
+  <!-- <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>
+          Date
+          <button class="btn btn-link" (click)="sortData()">
+            <mat-icon>swap_vert</mat-icon>
+          </button>
+        </th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let record of filteredData">
+        <td>{{ record.id }}</td>
+        <td>{{ record.date | date: 'mediumDate' }}</td>
+        <td>{{ record.name }}</td>
+      </tr>
+    </tbody>
+  </table> -->
+  
+  
+  
+  
+

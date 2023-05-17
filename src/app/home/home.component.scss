@@ -1,0 +1,20 @@
+// section {
+//     margin: 0;
+//     position: absolute;
+//     top: 40%;
+//     left: 50%;
+//     -ms-transform: translate(-50%, -50%);
+//     transform: translate(-50%, -50%);  
+//   }
+  
+ 
+  // .example-button-row {
+  //   display: table-cell;
+  //   max-width: 600px;
+  // }
+  section{
+    padding-left: 44%;
+  }
+  .example-button-row .mat-mdc-button-base {
+    margin: 8px 8px 8px 0;
+  }

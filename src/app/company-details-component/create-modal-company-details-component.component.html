@@ -1,0 +1,74 @@
+<div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
+  <mat-toolbar color="primary">
+    <h4 class="modal-title">Create Record</h4>
+    <span class="spacer"></span>
+    <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" (click)="onCancelClick()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </mat-toolbar>
+  
+</div>
+
+<div class="modal-body p-3" >
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label for="cno">C/NO.</label>
+        <input #firstInput type="text" class="form-control" id="cno" formControlName="cno" cdkFocusInitial  [ngClass]="{'ng-invalid': form.controls['cno'].invalid && (form.controls['cno'].dirty || form.controls['cno'].touched)}">
+        <!-- <mat-error *ngIf="form.controls['cno'].hasError('required') && (form.controls['cno'].dirty || form.controls['cno'].touched)">
+            CNO is required.
+          </mat-error> -->
+      </div>
+    
+      <div class="col-md-6 form-group">
+        <label for="date">Date</label>
+        <div class="input-group">
+          <input matInput type="text" class="form-control datepicker" id="date"  formControlName="date" [matDatepicker]="picker1">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col-md-12 form-group">
+        <label for="name">C/NO.</label>
+        <input type="text" class="form-control" id="name" formControlName="cno">
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label for="dummy1">DESTINATION</label>
+        <input type="text" class="form-control" id="dummy1" formControlName="dummy1" >
+      </div>
+      <div class="col-md-4 form-group">
+        <label for="dummy2">TYPE</label>
+        <input type="text" class="form-control" id="dummy2" formControlName="dummy2">
+      </div>
+      <div class="col-md-4 form-group">
+        <label for="dummy3">PC</label>
+        <input type="text" class="form-control" id="dummy3" formControlName="dummy3">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label for="dummy4">RATE</label>
+        <input type="text" class="form-control" id="dummy4" formControlName="dummy4">
+      </div>
+      <div class="col-md-4 form-group">
+        <label for="dummy5">WEIGHT</label>
+        <input type="text" class="form-control" id="dummy5" formControlName="dummy5">
+      </div>
+      <div class="col-md-4 form-group">
+        <label for="dummy6">AMOUNT</label>
+        <input type="text" class="form-control" id="dummy6" formControlName="dummy6">
+      </div>
+    </div>
+  </form>
+
+<div class="modal-content">
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="onSaveClick()" [disabled]="form.invalid"> Save</button>
+  <button type="button" class="btn btn-secondary" (click)="onCancelClick()" style="margin-left: 10px;">Cancel</button>
+</div>
+</div>
+</div>
