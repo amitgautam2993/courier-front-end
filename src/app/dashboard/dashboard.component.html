@@ -28,13 +28,21 @@
   
   <ng-template #cardList>
     <div fxLayout="row wrap" fxLayoutGap="16px" fxLayoutAlign="start">
-      <mat-card fxFlex="calc(33.33% - 16px)" *ngFor="let card of filteredCards" (click)="onCardClick(card)" matRipple style="cursor: pointer;margin: 16px;">
+      <mat-card fxFlex="calc(33.33% - 16px)" *ngFor="let card of filteredCards" (click)="onCardClick(card)" matRipple style="cursor: pointer;margin: 16px;height: 7pc;" [ngClass]="{ 'hovered-card': card.isHovered }" (mouseover)="card.isHovered = true" (mouseout)="card.isHovered = false">
+        <!-- Add edit button -->
+        <button mat-icon-button class="edit-button" (click)="onEditClick(card); $event.stopPropagation()">
+          <mat-icon  *ngIf="card.isHovered">edit</mat-icon>
+        </button>
         <mat-card-header>
-          <mat-card-title>{{ card.Companyname }}</mat-card-title>
-          <mat-card-subtitle>{{ card.Ownername }}</mat-card-subtitle>
-          <mat-card-subtitle>{{ card.address }}</mat-card-subtitle>
+          <mat-card-title><h5>{{ card.Companyname }}</h5></mat-card-title>
+          
+          <!-- <mat-card-subtitle>{{ card.Ownername }}</mat-card-subtitle>
+          <mat-card-subtitle>    <span class="spacer"></span>
+</mat-card-subtitle> -->
           <mat-card-subtitle>{{card.companyid}}</mat-card-subtitle>
+          
         </mat-card-header>
+        
       </mat-card>
     </div>
   </ng-template>

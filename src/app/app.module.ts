@@ -33,7 +33,9 @@ import { PaginatePipe } from './paginate.pipe';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { editModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
 import { createModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {trackingModalComapnyDetailComponent} from './company-details-component/company-details-component.component'
 import { DatePipe } from '@angular/common';
 import { AutofocusDirective } from './directives/autofocus/autofocus.directive';
 
@@ -59,6 +61,7 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     PaginatePipe,
     editModalComapnyDetailComponent,
     createModalComapnyDetailComponent,
+    trackingModalComapnyDetailComponent,
     AutofocusDirective
   ],
   imports: [
@@ -84,7 +87,9 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,
-    ModalModule
+    ModalModule,
+    MatAutocompleteModule,
+    MatSnackBarModule
 
   ],
   providers: [AuthService,AuthGuard,DatePipe],

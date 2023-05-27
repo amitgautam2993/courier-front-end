@@ -29,3 +29,40 @@ mat-card{
   margin-bottom: 16px;
 
 }
+.mat-toolbar {
+  display: flex !important;
+  align-items: center !important;
+}
+.spacer {
+  flex: 1 !important;
+}
+label {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+.mat-card {
+  position: relative;
+}
+
+.hovered-card {
+  background-color: #f0f0f0;
+}
+
+.edit-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 1;
+
+  z-index: 1;
+  pointer-events: auto;
+}
+.mat-card:hover .edit-button {
+  opacity: 1;
+}
+
+.custom-snackbar {
+  font-size: 16px !important;
+  background-color: #ff0000 !important; /* Set the desired background color */
+  color: #ffffff !important; /* Set the desired text color */
+}

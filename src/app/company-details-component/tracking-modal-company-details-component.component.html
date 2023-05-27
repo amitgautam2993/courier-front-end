@@ -1,0 +1,99 @@
+<div class="modal-container">
+<div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;" sticky>
+    <mat-toolbar color="primary">
+      <h4 class="modal-title">Tracking Information</h4>
+      <span class="spacer"></span>
+      <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" (click)="onCancelClick()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </mat-toolbar>
+  </div>
+  
+  <div class="modal-content p-3">
+   
+    
+    <div *ngIf="isLoading;else dataContent" class="loading-container">
+      <!-- Loading indicator -->
+      <mat-spinner></mat-spinner>
+    </div>
+  
+    <ng-template #dataContent>
+      <!-- Display tracking details -->
+      <p><strong >Tracking Number: </strong>  {{ trackingData?.data?.items[0]?.tracking_number }}</p>
+      <p><strong>Carrier: </strong> {{ trackingData?.data?.items[0]?.carrier_code.toUpperCase() }}</p>
+      <p><strong>Status: </strong> <span [class.green]="trackingData?.data?.items[0]?.status === 'delivered'" [class.red]="trackingData?.data?.items[0]?.status !== 'delivered'">{{ trackingData?.data?.items[0]?.status.toUpperCase() }}</span></p>
+      
+      <!-- <h3>Origin Information</h3> -->
+      <!-- Display origin information -->
+      <!-- ... -->
+      
+      <!-- <h3>Destination Information</h3> -->
+      <!-- Display destination information -->
+      <!-- ... -->
+      <h3 (click)="toggleDestination()" style="cursor: pointer;">
+        Destination Information
+        <span  class="material-icons expand-icon">{{ destinationExpanded ? 'expand_less' : 'expand_more' }}</span>
+      </h3>
+      <div *ngIf="destinationExpanded">
+        <p class="line"></p>
+        <p><strong>Item Received: </strong><span [class.green]="trackingData.data.items[0].destination_info.ItemReceived!==null" [class.red]="trackingData.data.items[0].destination_info.ItemReceived===null">{{trackingData.data.items[0].destination_info.ItemReceived===null?'Not Available':trackingData.data.items[0].destination_info.ItemReceived}}</span></p>
+        <p><strong>Item Dispatched: </strong><span [class.green]="trackingData.data.items[0].destination_info.ItemDispatched!==null" [class.red]="trackingData.data.items[0].destination_info.ItemDispatched===null">{{trackingData.data.items[0].destination_info.ItemDispatched===null?'Not Available':trackingData.data.items[0].destination_info.ItemDispatched}}</span></p>
+        <p><strong>DepartfromAirport: </strong><span [class.green]="trackingData.data.items[0].destination_info.DepartfromAirport!==null" [class.red]="trackingData.data.items[0].destination_info.DepartfromAirport===null">{{trackingData.data.items[0].destination_info.DepartfromAirport===null?'Not Available':trackingData.data.items[0].destination_info.DepartfromAirport}}</span></p>
+        <p><strong>Customs Clearance: </strong><span [class.green]="trackingData.data.items[0].destination_info.CustomsClearance!==null" [class.red]="trackingData.data.items[0].destination_info.CustomsClearance===null">{{trackingData.data.items[0].destination_info.CustomsClearance===null?'Not Available':trackingData.data.items[0].destination_info.CustomsClearance}}</span></p>
+        <p><strong>Destination Arrived: </strong><span [class.green]="trackingData.data.items[0].destination_info.DestinationArrived!==null" [class.red]="trackingData.data.items[0].destination_info.DestinationArrived===null">{{trackingData.data.items[0].destination_info.DestinationArrived===null?'Not Available':trackingData.data.items[0].destination_info.DestinationArrived}}</span></p>
+        <p><strong>Weblink: </strong><span [class.green]="trackingData.data.items[0].destination_info.weblink!==null" [class.red]="trackingData.data.items[0].destination_info.weblink===null">{{trackingData.data.items[0].destination_info.weblink===null?'Not Available':trackingData.data.items[0].destination_info.weblink}}</span></p>
+        <p><strong>Phone: </strong><span [class.green]="trackingData.data.items[0].destination_info.phone!==null" [class.red]="trackingData.data.items[0].destination_info.phone===null">{{trackingData.data.items[0].destination_info.phone===null?'Not Available':trackingData.data.items[0].destination_info.phone}}</span></p>
+        <p><strong>Carrier Code: </strong><span [class.green]="trackingData.data.items[0].destination_info.carrier_code!==null" [class.red]="trackingData.data.items[0].destination_info.carrier_code===null">{{trackingData.data.items[0].destination_info.carrier_code===null?'Not Available':trackingData.data.items[0].destination_info.carrier_code}}</span></p>
+        <p><strong>TrackInfo: </strong><span [class.green]="trackingData.data.items[0].destination_info.trackinfo!==null" [class.red]="trackingData.data.items[0].destination_info.trackinfo===null">{{trackingData.data.items[0].destination_info.trackinfo===null?'Not Available':trackingData.data.items[0].destination_info.trackinfo}}</span></p>
+
+
+      </div>
+      
+      <h3 (click)="toggleOrigin()" style="cursor: pointer;">
+        
+        Origin Information
+        <span class="material-icons expand-icon">{{ originExpanded ? 'expand_less' : 'expand_more' }}</span>
+      </h3>
+      <div *ngIf="originExpanded">
+      <p><strong>Item Received: </strong><span [class.green]="trackingData.data.items[0].origin_info.ItemReceived!==null" [class.red]="trackingData.data.items[0].origin_info.ItemReceived===null">{{trackingData.data.items[0].origin_info.ItemReceived===null?'Not Available' : trackingData.data.items[0].origin_info.ItemReceived}}</span></p>
+      <p><strong>Item Dispatched: </strong><span [class.green]="trackingData.data.items[0].origin_info.ItemDispatched!==null" [class.red]="trackingData.data.items[0].origin_info.ItemDispatched===null">{{trackingData.data.items[0].origin_info.ItemDispatched===null?'Not Available' : trackingData.data.items[0].origin_info.ItemDispatched}}</span></p>
+      <p><strong>Depart from Airport: </strong><span [class.green]="trackingData.data.items[0].origin_info.DepartfromAirport!==null" [class.red]="trackingData.data.items[0].origin_info.DepartfromAirport===null">{{trackingData.data.items[0].origin_info.DepartfromAirport===null?'Not Available' : trackingData.data.items[0].origin_info.DepartfromAirport}}</span></p>
+      <p><strong>Arrival from Abroad: </strong><span [class.green]="trackingData.data.items[0].origin_info.ArrivalfromAbroad!==null" [class.red]="trackingData.data.items[0].origin_info.ArrivalfromAbroad===null">{{trackingData.data.items[0].origin_info.ArrivalfromAbroad===null?'Not Available' : trackingData.data.items[0].origin_info.ArrivalfromAbroad}}</span></p>
+      <p><strong>DestinationArrived: </strong><span [class.green]="trackingData.data.items[0].origin_info.DestinationArrived!==null" [class.red]="trackingData.data.items[0].origin_info.DestinationArrived===null">{{trackingData.data.items[0].origin_info.DestinationArrived===null?'Not Available' : trackingData.data.items[0].origin_info.DestinationArrived}}</span></p>
+      <p><strong>Weblink: </strong><span [class.green]="trackingData.data.items[0].origin_info.weblink!==null" [class.red]="trackingData.data.items[0].origin_info.weblink===null">{{trackingData.data.items[0].origin_info.weblink===null?'Not Available' : trackingData.data.items[0].origin_info.weblink}}</span></p>
+      <p><strong>Phone: </strong><span [class.green]="trackingData.data.items[0].origin_info.phone!==null" [class.red]="trackingData.data.items[0].origin_info.phone===null">{{trackingData.data.items[0].origin_info.phone===null?'Not Available' : trackingData.data.items[0].origin_info.phone}}</span></p>
+      <p><strong>Carrier Code: </strong><span [class.green]="trackingData.data.items[0].origin_info.carrier_code!==null" [class.red]="trackingData.data.items[0].origin_info.carrier_code===null">{{trackingData.data.items[0].origin_info.carrier_code===null?'Not Available' : trackingData.data.items[0].origin_info.carrier_code}}</span></p>
+      
+      <!-- <p><strong></strong><span [class.green]="trackingData.data.items[0].origin_info.!==null" [class.red]="trackingData.data.items[0].origin_info.===null">{{trackingData.data.items[0].origin_info.===null?'Not Available' : trackingData.data.items[0].origin_info.}}</span></p> -->
+      
+    </div>
+      
+      <h3 (click)="toggleTrack()" style="cursor: pointer;">
+        Tracking History
+        <span class="material-icons expand-icon">{{ trackExpanded ? 'expand_less' : 'expand_more' }}</span>
+        </h3>
+        <div *ngIf="trackExpanded">
+      <p class="line"></p>
+      <ul class="track-list">
+        <!-- Loop through trackinfo array and display each tracking history item -->
+        <li *ngFor="let trackItem of trackingData.data.items[0].origin_info.trackinfo" style="
+        margin-bottom: 5px;
+    ">
+            <div class="status-icon">
+              <span  [class.delivered]="trackItem.checkpoint_status=='delivered'" [class.outfordelivery]="trackItem.checkpoint_status=='pickup'" [class.transit]="trackItem.checkpoint_status=='transit'" ></span>
+              <p class="status"><strong>Status: </strong>{{ trackItem.StatusDescription }}</p>
+            </div>
+            <p class="date"><strong>Date: </strong>{{ trackItem.Date }}</p>
+            <p class="details"><strong>Details: </strong>{{ trackItem.Details }}</p>
+            <p class="details"><strong>Checkpoint Status: </strong><span [class.green]="trackItem.checkpoint_status=='delivered'" [class.red]="trackItem.checkpoint_status=='transit'" [class.yellow]="trackItem.checkpoint_status=='pickup'">{{ trackItem.checkpoint_status.toUpperCase() }}</span></p>
+            <p class="line"></p>
+          </li>
+       
+
+      </ul>
+        </div>
+      
+      <!-- Close the modal -->
+    </ng-template>
+  </div>
+</div>

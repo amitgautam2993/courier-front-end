@@ -51,7 +51,7 @@
 <table class="table">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>S/NO.</th>
         <th>C/N NO.</th>
         <th class="date-header">
           Date
@@ -69,9 +69,10 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let record of filteredData">
+      <ng-container *ngFor="let record of filteredData; let i = index">
         <tr style="cursor: pointer;" (mouseenter)="onRowHover(record, true)" (mouseleave)="onRowHover(record, false)">
-            <td>{{ record.id }}</td> <td>{{ record.cno }}</td>
+            <td>{{ i+1 }}</td> 
+            <td class="link" (click)="trackModal(record)">{{ record.cno }}</td>
           <td>{{ record.date | date: 'mediumDate' }}</td>
          
           <td>{{ record.dummy1 }}</td>

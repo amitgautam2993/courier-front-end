@@ -14,7 +14,7 @@
     <div class="row">
       <div class="col-md-6 form-group">
         <label for="cno">C/NO.</label>
-        <input #firstInput type="text" class="form-control" id="cno" formControlName="cno" cdkFocusInitial  [ngClass]="{'ng-invalid': form.controls['cno'].invalid && (form.controls['cno'].dirty || form.controls['cno'].touched)}">
+        <input  #input1  type="text" class="form-control" id="cno" formControlName="cno" cdkFocusInitial (keydown)="addEventListeners()"  [ngClass]="{'ng-invalid': form.controls['cno'].invalid && (form.controls['cno'].dirty || form.controls['cno'].touched)}">
         <!-- <mat-error *ngIf="form.controls['cno'].hasError('required') && (form.controls['cno'].dirty || form.controls['cno'].touched)">
             CNO is required.
           </mat-error> -->
@@ -23,7 +23,7 @@
       <div class="col-md-6 form-group">
         <label for="date">Date</label>
         <div class="input-group">
-          <input matInput type="text" class="form-control datepicker" id="date"  formControlName="date" [matDatepicker]="picker1">
+          <input #input2  matInput type="text" class="form-control datepicker" id="date"  (keydown)="addEventListeners()" formControlName="date" [matDatepicker]="picker1">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </div>
@@ -36,39 +36,69 @@
       </div>
     </div> -->
     <div class="row">
-      <div class="col-md-4 form-group">
+      <!-- <div class="col-md-4 form-group">
         <label for="dummy1">DESTINATION</label>
         <input type="text" class="form-control" id="dummy1" formControlName="dummy1" >
+      </div> -->
+      <div class="col-md-4 form-group">
+        <label for="dummy1">DESTINATION</label>
+        <input #input3 type="text" class="form-control" id="dummy1" formControlName="dummy1" (keydown)="addEventListeners()" [matAutocomplete]="destinationAuto" (input)="filterDestinations($event)">
+<mat-autocomplete autoActiveFirstOption #destinationAuto="matAutocomplete" class="custom-autocomplete">
+  <mat-option *ngFor="let destination of availableDestinations" [value]="destination">
+    {{ destination }}
+  </mat-option>
+</mat-autocomplete>
+
       </div>
+      
+      
+      
+      <!-- <label for="dummy1">DESTINATION</label>
+      <input type="text" class="form-control" id="dummy1" [formControl]="destinationControl" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let destination of filteredDestinations | async" [value]="destination">
+          {{ destination }}
+        </mat-option>
+      </mat-autocomplete> -->
+      
       <div class="col-md-4 form-group">
         <label for="dummy2">TYPE</label>
-        <input type="text" class="form-control" id="dummy2" formControlName="dummy2">
+        <input #input4 type="text" class="form-control" id="dummy2" (keydown)="addEventListeners()" formControlName="dummy2" (input)="filterType($event)" [matAutocomplete]="typeAuto">
+        <mat-autocomplete autoActiveFirstOption #typeAuto="matAutocomplete" class="custom-autocomplete">
+          <mat-option *ngFor="let type of availableType" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-autocomplete>
       </div>
       <div class="col-md-4 form-group">
         <label for="dummy3">PC</label>
-        <input type="text" class="form-control" id="dummy3" formControlName="dummy3">
+        <input #input5 type="text" class="form-control" id="dummy3" (keydown)="addEventListeners()" formControlName="dummy3">
       </div>
     </div>
     <div class="row">
       <div class="col-md-4 form-group">
         <label for="dummy4">RATE</label>
-        <input type="text" class="form-control" id="dummy4" formControlName="dummy4">
+        <input #input6 type="text" class="form-control" id="dummy4" (keydown)="addEventListeners()" formControlName="dummy4">
       </div>
       <div class="col-md-4 form-group">
-        <label for="dummy5">WEIGHT</label>
-        <input type="text" class="form-control" id="dummy5" formControlName="dummy5">
+        <label for="dummy5">KG </label>
+        <input #input7 type="text" class="form-control" id="dummy5" (keydown)="addEventListeners()" formControlName="dummy5">
       </div>
+      <!-- <div class="col-md-2 form-group">
+        <label for="dummy6">gm</label>
+        <input #input8 type="text" class="form-control" id="dummy6" (keydown)="addEventListeners()" formControlName="dummy6">
+      </div> -->
       <div class="col-md-4 form-group">
-        <label for="dummy6">AMOUNT</label>
-        <input type="text" class="form-control" id="dummy6" formControlName="dummy6">
+        <label for="dummy7">AMOUNT</label>
+        <input #input9 type="text" class="form-control" id="dummy7" (keydown)="addEventListeners()" formControlName="dummy7"  >
       </div>
     </div>
   </form>
 
 <div class="modal-content">
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary" (click)="onSaveClick()" [disabled]="form.invalid"> Save</button>
-  <button type="button" class="btn btn-secondary" (click)="onCancelClick()" style="margin-left: 10px;">Cancel</button>
+  <button #input9 type="button" class="btn btn-primary"  (keydown)="addEventListeners()" (click)="onSaveClick()" [disabled]="form.invalid"> Save</button>
+  <!-- <button type="button" class="btn btn-secondary" (click)="onCancelClick()" style="margin-left: 10px;">Cancel</button> -->
 </div>
 </div>
 </div>

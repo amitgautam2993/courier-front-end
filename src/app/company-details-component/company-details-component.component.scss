@@ -1,3 +1,111 @@
+.track-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+}
+.status-icon {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px; /* Adjust the spacing as needed */
+}
+.delivered {
+  width: 24px;
+  height: 24px;
+
+  background-image: url('../../icons/delivered.png'); /* Replace with the path to your truck icon image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-right: 8px; /* Adjust the spacing as needed */
+}
+.outfordelivery{
+  width: 24px;
+  height: 24px;
+
+  background-image: url('../../icons/outfordelivery.png'); /* Replace with the path to your truck icon image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-right: 8px; /* Adjust the spacing as needed */
+}
+.transit{
+  width: 24px;
+  height: 24px;
+
+  background-image: url('../../icons/transit.png'); /* Replace with the path to your truck icon image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-right: 8px; /* Adjust the spacing as needed */
+}
+.status {
+  margin: 0;
+}
+.green {
+  color: green;
+  font-weight:bold;
+}
+
+.red {
+  color: red;
+  font-weight:bold;
+}
+.yellow{
+  color: darkgoldenrod;
+  font-weight: bold;
+}
+.line::after {
+  content: "";
+  display: block;
+  border-bottom: 1px solid black;
+  margin-top: 10px;
+}
+
+
+.date,
+.details {
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  margin-left: 31px;
+}
+
+.modal-container {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.modal-content {
+  padding-top: 14px; /* Adjust this value to account for the header's height */
+}
+
+/* Additional styles for the modal */
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50%; /* Adjust this value as needed */
+}
+
+.link {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.link:hover {
+  color: darkblue;
+}
+
 .mat-toolbar {
   display: flex !important;
   align-items: center !important;
@@ -81,4 +189,9 @@ label {
 .ng-invalid.ng-dirty,
 .ng-invalid.ng-touched {
   border-color: red;
+}
+
+.custom-autocomplete {
+  max-height: 150px !important; /* Set the maximum height as per your requirement */
+  overflow-y: auto !important;
 }

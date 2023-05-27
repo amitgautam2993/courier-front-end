@@ -1,9 +1,10 @@
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
 <mat-toolbar color="primary" >
     <h4>Add Company</h4>
-<button (click)="close()" mat-raised-button  style="margin-left: 50px; height: 0px;width: 0px;padding-left: 50px;">
-    X
-</button>
+    <span class="spacer"></span>
+    <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
 </mat-toolbar>
 </div>
 <div class="example-container" >
