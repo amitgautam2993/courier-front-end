@@ -195,3 +195,22 @@ label {
   max-height: 150px !important; /* Set the maximum height as per your requirement */
   overflow-y: auto !important;
 }
+.loading-container {
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh; /* Adjust as needed */
+}
+.custom-spinner {
+ 
+  background-image: url('../../icons/loadingTruck.gif');
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-position: center;
+}
+.custom-snackbar {
+  font-size: 16px !important;
+  background-color: #ff0000 !important; /* Set the desired background color */
+  color: #ffffff !important; /* Set the desired text color */
+}

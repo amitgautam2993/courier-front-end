@@ -37,8 +37,8 @@
   </form>
   <!-- ... existing code ... -->
   <button mat-raised-button (click)="createModal()">Create</button>
-  <button mat-raised-button (click)="generatePDF()">Export PDF</button>
-  <button mat-raised-button (click)="refresh()">Refresh</button>
+  <button mat-raised-button (click)="generatePDF()" [disabled]="!dataFound">Export PDF</button>
+  <button mat-raised-button (click)="refresh()" [disabled]="!dataFound">Refresh</button>
 <mat-form-field appearance="fill" style="margin-left: 10px;" class="mat-form-field">
     <mat-label>Search</mat-label>
     <input matInput (input)="searchData()" [(ngModel)]="searchTerm" />
@@ -72,16 +72,16 @@
       <ng-container *ngFor="let record of filteredData; let i = index">
         <tr style="cursor: pointer;" (mouseenter)="onRowHover(record, true)" (mouseleave)="onRowHover(record, false)">
             <td>{{ i+1 }}</td> 
-            <td class="link" (click)="trackModal(record)">{{ record.cno }}</td>
+            <td class="link" (click)="trackModal(record)">{{ record.cnumber }}</td>
           <td>{{ record.date | date: 'mediumDate' }}</td>
          
-          <td>{{ record.dummy1 }}</td>
-          <td>{{ record.dummy2 }}</td>
-          <td>{{ record.dummy3 }}</td>
-          <td>{{ record.dummy4 }}/-</td>
-          <td>{{ record.dummy5 }}gm</td>
+          <td>{{ record.destination }}</td>
+          <td>{{ record.type }}</td>
+          <td>{{ record.pc }}</td>
+          <td>{{ record.rate }}/-</td>
+          <td>{{ record.weight }}kg</td>
           <td>
-            {{ record.dummy6 }}.00
+            {{ record.amount }}.00
             <ng-template #editButton>
               <mat-icon class="mat-icon-small edit-icon" (click)="openModal(record)">edit</mat-icon>
             </ng-template>
@@ -134,7 +134,7 @@
         <td>{{ record.dummy4 }}</td>
         <td>{{ record.dummy5 }}</td>
         <td>
-            {{ record.dummy6 }}
+            {{ record.amount }}
             <ng-template #editButton>
               <mat-icon class="mat-icon-small edit-icon" (click)="openModal(record)">edit</mat-icon>
             </ng-template>

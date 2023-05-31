@@ -22,8 +22,12 @@
 
 
 <div *ngIf="loading; else cardList" class="spinner-container" fxLayout="column" fxLayoutAlign="center center">
+ 
+  <mat-spinner [ngClass]="{'custom-spinner': showCustomSpinner}"></mat-spinner>
 
-    <mat-spinner></mat-spinner>
+  <!-- <img src="../../icons/loadingTruck.gif" alt="Loading" /> -->
+
+    <!-- <mat-spinner></mat-spinner> -->
   </div>
   
   <ng-template #cardList>

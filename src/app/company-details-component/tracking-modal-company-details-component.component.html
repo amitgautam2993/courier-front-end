@@ -14,7 +14,7 @@
     
     <div *ngIf="isLoading;else dataContent" class="loading-container">
       <!-- Loading indicator -->
-      <mat-spinner></mat-spinner>
+      <mat-spinner [ngClass]="{'custom-spinner': showCustomSpinner}"></mat-spinner>
     </div>
   
     <ng-template #dataContent>

@@ -10,6 +10,7 @@ import { DatePipe } from '@angular/common';
 import { TDocumentDefinitions } from "pdfmake/interfaces";
 //import {FocusDirective} from '../directives/autofocus/autofocus.directive'
 import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -39,15 +40,16 @@ cardData: any;
 data: any;
 selectedRow: any;
 isHovered = false;
+dataFound!: boolean
 
 
 //constructor
-  constructor(public dialog: MatDialog,private route: ActivatedRoute,private router: Router,private formBuilder: FormBuilder,private authService: AuthService,private datePipe: DatePipe) {
+  constructor(private _snackBar: MatSnackBar,private http: HttpClient,public dialog: MatDialog,private route: ActivatedRoute,private router: Router,private formBuilder: FormBuilder,private authService: AuthService,private datePipe: DatePipe) {
     this.searchTerm = '';
 
   }
 
-//ngOnInit
+//ngOnInitpd
   ngOnInit() {
     
     // console.log(amountInWords)
@@ -58,13 +60,58 @@ isHovered = false;
       toDate: ''
     });
   
+    // this.dateRange.valueChanges.subscribe(value => {
+    //   console.log('Selected date range: ', value.fromDate.toISOString(), ' to ', value.toDate.toISOString());
+    //   // you can use the selected dates here
+    //   this.dummyData = this.generateDummyData(value.fromDate, value.toDate, 5);
+    //   console.log(this.dummyData[0].date)
+    //   this.filterData();
+    // });
     this.dateRange.valueChanges.subscribe(value => {
-      //console.log('Selected date range: ', value.fromDate, ' to ', value.toDate);
-      // you can use the selected dates here
-      this.dummyData = this.generateDummyData(value.fromDate, value.toDate, 5);
-      console.log(this.dummyData[0].date)
+      console.log('Selected date range: ', value.fromDate.toISOString(), ' to ', value.toDate.toISOString());
+    
+      // Make an API call with the selected dates
+      const fromDate = value.fromDate.toISOString();
+      const toDate = value.toDate.toISOString();
+    
+      // Construct the API endpoint with query parameters
+      const endpoint = `http://localhost:9002/courierdata/daterange/122256?from=${fromDate}&to=${toDate}`;
+    
+      // Make the API call using the Angular Router
+      this.http.get<any>(endpoint).subscribe(data => {
+      console.log(data.data.courierDetails) 
+         
+      this.dataFound=true; 
+      this.dummyData= data.data.courierDetails
       this.filterData();
+      },(error:any)=>{
+        if(error.status==404){
+          this.dummyData=[]
+          this.dataFound=false; 
+          this.filterData();
+
+          this._snackBar.open(error.error.message, 'Dismiss',{
+            duration: 4000,
+        //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        // verticalPosition: 'top',
+        panelClass: ['custom-snackbar']
+          });  
+        }
+        else {
+          // Handle other error scenarios (status 500, 404, etc.)
+          this.dataFound=false; 
+
+          this._snackBar.open(error.error.message, 'Dismiss',{
+            duration: 4000,
+           
+          });  
+        }
+        //console.log('Error Fetching data:')
+      });
+    
     });
+    
+    
   
     // Initialize searchTerm to empty string if it is undefined
     this.searchTerm = this.searchTerm || '';
@@ -85,6 +132,7 @@ isHovered = false;
   }
   //refresh function
 refresh() {
+  window.location.reload();
 
 }
 
@@ -100,7 +148,7 @@ logout() {
 //searchData function
 searchData() {
   this.filteredData = this.dummyData.filter(record => {
-    return record.cno.includes(this.searchTerm);
+    return record.cnumber.includes(this.searchTerm);
   });
 }
 
@@ -146,7 +194,7 @@ generatePDF() {
             alignment: 'left',
           },
           {
-            text: 'Invoice: 104\nBRANCH CODE: SG\n SHIPPER CODE: PGDAV\nPERIOD: 01/2020',
+            text: ['Invoice: 104\nBRANCH CODE: SG\n SHIPPER CODE: PGDAV\nPERIOD:',{text:'2023'}],
             alignment: 'right',
           },
         ],
@@ -158,37 +206,36 @@ generatePDF() {
 			alignment:'center',
 			
         table: {
-          headerRows: 1,
-          
+          headerRows: 1, 
           body: [
-            ['S. No.', 'C/N NO.', 'DATE','DEST', 'TYPE', 'PC','RATE', 'WEIGHT', 'AMOUNT(RS)',],
-            ...this.dummyData.map((data,index) => [index + 1, data.cno, this.datePipe.transform(data.date, 'MM/dd/yyyy'),  data.dummy1,data.dummy2,data.dummy3,data.dummy4+'/-',data.dummy5+'gm',data.dummy6+'.00']),
+            ['S.NO.', 'C/N NO.', 'DATE','DEST', 'TYPE', 'PC','RATE', 'WEIGHT', 'AMOUNT',],
+            ...this.dummyData.map((data,index) => [index + 1, data.cnumber, this.datePipe.transform(data.date, 'MM/dd/yyyy'),  data.destination,data.type,data.pc,data.rate+'/-',data.weight+'Kg',data.amount+'.00']),
           ],
         },layout: 'lightHorizontalLines'
       },
       {canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595-2*40, y2: 5, lineWidth: 2 }]
 		    
 		},
-		{			text:['GROSS TOTAL : ',{text:this.totalamountNumber},'.00'],
+		{			fontSize:10,text:['GROSS TOTAL : ',{text:this.totalamountNumber},'.00'],
 		            alignment:'right',
-		            margin:[0,3,20,3],
+		            margin:[0,3,2,3],
 		            bold:true
 },
 		{canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595-2*40, y2: 5, lineWidth: 2 }]
 		    
 		},
-		{
-		    text:['TOTAL NO. OF PACKET : ',{text:this.totalpacket,bold:true}],
+		{   fontSize:10,
+		    text:['TOTAL NO. OF PACKET : ',{text:this.totalpacket,bold:true,fontSize:10}],
 		    margin:[0,5,0,0],
 		   
 		    
 		},
-			{
-			alignment: 'justify',
-			style:'columns'
+			{fontSize:10,
+			alignment: 'justify'
+			
 ,			columns: [
 				{
-					text:['Ruppes GROSS TOTAL : ',{text: this.totalamountWords,bold:true}]
+					text:['Ruppes GROSS TOTAL : ',{text: this.totalamountWords,bold:true,fontSize:10}]
 					
 					
 					
@@ -253,12 +300,12 @@ totalamountNumber:any
 //getDisplayedIdSum function
 getDisplayedIdSum() {
   var upperString=''
-  console.log(this.filteredData.reduce((acc, curr) => acc + curr.dummy3, 0))
-  this.totalpacket= this.filteredData.reduce((acc, curr) => acc + curr.dummy3, 0);
+  console.log(this.filteredData.reduce((acc, curr) => acc + curr.pc, 0))
+  this.totalpacket= this.filteredData.reduce((acc, curr) => acc + curr.pc, 0);
   const numWords = require('num-words')
-  upperString = numWords(this.filteredData.reduce((acc, curr) => acc + curr.dummy6, 0));
+  upperString = numWords(this.filteredData.reduce((acc, curr) => acc + curr.amount, 0));
   this.totalamountWords=upperString.toUpperCase();
-  this.totalamountNumber= this.filteredData.reduce((acc, curr) => acc + curr.dummy6, 0);
+  this.totalamountNumber= this.filteredData.reduce((acc, curr) => acc + curr.amount, 0);
 
 
 }
@@ -292,7 +339,7 @@ sortData() {
   filterData() {
     if (this.searchTerm) {
       this.filteredData = this.dummyData.filter(data =>
-        data.cno.includes(this.searchTerm)
+        data.cnumber.includes(this.searchTerm)
       );
     } else {
       this.filteredData = this.dummyData
@@ -317,13 +364,13 @@ sortData() {
       const record = {
         id: i + 1,
         date: date,
-        cno: Math.floor(Math.random() * 1000000000) + 1+`${i + 1}`,
-        dummy1: (Math.random() + 1).toString(36).substring(9),
-        dummy2: (Math.random() + 1).toString(36).substring(9),
-        dummy3: Math.floor(Math.random() * 100) + 1,
-        dummy4: Math.floor(Math.random() * 1000) + 1,
-        dummy5: Math.floor(Math.random() * 1000) + 1,
-        dummy6: Math.floor(Math.random() * 10000) + 1,
+        cnumber: Math.floor(Math.random() * 1000000000) + 1+`${i + 1}`,
+        destination: (Math.random() + 1).toString(36).substring(9),
+        type: (Math.random() + 1).toString(36).substring(9),
+        pc: Math.floor(Math.random() * 100) + 1,
+        rate: Math.floor(Math.random() * 1000) + 1,
+        weight: Math.floor(Math.random() * 1000) + 1,
+        amount: Math.floor(Math.random() * 10000) + 1,
         
       };
       data.push(record);
@@ -378,7 +425,7 @@ sortData() {
       height:'700px',
       width:'500px',
       panelClass:[],
-      data: record
+      data: record,
       // pass record object instead of { data: this.data }
     }).afterClosed().subscribe(res=>{
       console.log(`Dialog result: ${res}`);
@@ -399,13 +446,15 @@ sortData() {
 export class trackingModalComapnyDetailComponent implements OnInit{
   trackingData: any;
   isLoading!: boolean;
-  cno:String='';
+  cnumber:String='';
   destinationExpanded: boolean = false;
   originExpanded: boolean = false;
   trackExpanded:boolean=true
+  showCustomSpinner = true;
+  couriercode:string='';
   constructor(private http: HttpClient,public dialogRef: MatDialogRef<trackingModalComapnyDetailComponent>,@Inject(MAT_DIALOG_DATA) public data: any){
-this.cno=data.cno
-    
+  this.cnumber=data.cnumber,
+  this.couriercode= data.couriercode
   }
   
   toggleDestination() {
@@ -421,12 +470,12 @@ this.cno=data.cno
   ngOnInit(){
     this.isLoading = true;
     let bodyData = {
-      "tracking_number": this.cno,
-      "carrier_code": "trackon"
+      "tracking_number": this.cnumber,
+      "carrier_code": this.couriercode
       // "tracking_number": "d38418282",
       // "carrier_code": "dtdc"
     };
-
+console.log(bodyData)
     this.http.post("http://localhost:9002/api/trackings/realtime", bodyData)
       .subscribe(
         (response) => {
@@ -473,13 +522,13 @@ export class editModalComapnyDetailComponent implements OnInit{
     this.form = this.fb.group({
     
       date: [this.data.date],
-      cno: [this.data.cno],
-      dummy1: [this.data.dummy1],
-      dummy2: [this.data.dummy2],
-      dummy3: [this.data.dummy3],
-      dummy4: [this.data.dummy4],
-      dummy5: [this.data.dummy5],
-      dummy6: [this.data.dummy6],
+      cnumber: [this.data.cnumber],
+      destination: [this.data.destination],
+      type: [this.data.type],
+      pc: [this.data.pc],
+      rate: [this.data.rate],
+      weight: [this.data.weight],
+      amount: [this.data.amount],
     });
   }
 
@@ -490,13 +539,13 @@ export class editModalComapnyDetailComponent implements OnInit{
     this.form.patchValue({
       id: this.data.id || '',
       date: this.data.date||'',
-      cno: this.data.cno || '',
-      dummy1: this.data.dummy1 || '',
-      dummy2: this.data.dummy2 || '',
-      dummy3: this.data.dummy3 || '',
-      dummy4: this.data.dummy4 || '',
-      dummy5: this.data.dummy5 || '',
-      dummy6: this.data.dummy6 || '',
+      cnumber: this.data.cnumber || '',
+      destination: this.data.destination || '',
+      type: this.data.type || '',
+      pc: this.data.pc || '',
+      rate: this.data.rate || '',
+      weight: this.data.weight || '',
+      amount: this.data.amount || '',
     });
   }
   
@@ -539,13 +588,13 @@ export class editModalComapnyDetailComponent implements OnInit{
 
 //     this.form = this.formBuilder.group({
 //       date: this.dateControl,
-//       cno: ['', Validators.required],
-//       dummy1: this.destinationControl,
-//       dummy2: ['', Validators.required],
-//       dummy3: ['', Validators.required],
-//       dummy4: ['', Validators.required],
-//       dummy5: ['', Validators.required],
-//       dummy6: ['', Validators.required],
+//       cnumber: ['', Validators.required],
+//       destination: this.destinationControl,
+//       type: ['', Validators.required],
+//       pc: ['', Validators.required],
+//       rate: ['', Validators.required],
+//       weight: ['', Validators.required],
+//       amount: ['', Validators.required],
 //     });
   
   
@@ -569,8 +618,9 @@ export class editModalComapnyDetailComponent implements OnInit{
 // }
 export class createModalComapnyDetailComponent implements OnInit {
   dateControl!: FormControl;
-  availableType: string[] = ['DOX','NON-DOX']
-  availableDestinations: string[] = ['MUM', 'DEl', 'BAN','CHE','SUR','RAJ','JAI','COI','PAT','PUN','HYD','AHM','THI','MAN','VAD','KNP','TRI','IND','COC','KOL','AMR','BHO','MAL','RAI','GUW','LUC','THR','BHU','VAR','CAL','VIZ','SRI','PAL','KOT','KAN','AUR','RAN','DIL','JAM','SHI'];
+  availableType: string[] = ['NDOX','DOX'];
+  availableCourierCode:string[]=['dtdc','trackon','bluedart'];
+  availableDestinations: string[] = ['BOM', 'DEl','TMN','UKD','HIM','JOD', 'BAN','CHE','SUR','RAJ','JAI','COI','PAT','PUN','HYD','AHM','THI','MAN','VAD','KNP','TRI','IND','COC','KOL','AMR','BHO','MAL','RAI','GUW','LUC','THR','BHU','VAR','CAL','VIZ','SRI','PAL','KOT','KAN','AUR','RAN','DIL','JAM','SHI'];
   @ViewChild('input1') input1!: ElementRef;
   @ViewChild('input2') input2!: ElementRef;
   @ViewChild('input3') input3!: ElementRef;
@@ -578,31 +628,74 @@ export class createModalComapnyDetailComponent implements OnInit {
   @ViewChild('input5') input5!: ElementRef;
   @ViewChild('input6') input6!: ElementRef;
   @ViewChild('input7') input7!: ElementRef;
-  //@ViewChild('input8') input8!: ElementRef;
-  @ViewChild('input9') input9!: ElementRef;
+  @ViewChild('input8') input8!: ElementRef;
+  @ViewChild('input10') input10!: ElementRef;
+
   ngOnInit(): void {
 
     this.addEventListeners();
+    // this.attachSaveClickListener();
+
 
   }
   
 
   addEventListeners(): void {
-    this.input1.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        if (this.input1.nativeElement.value) {
-          this.input2.nativeElement.focus();
-        }
+
+
+  this.input1.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    if (this.input1.nativeElement.value) {
+      this.input2.nativeElement.focus();
+      this.input2.nativeElement.select();
+    }
+  }
+});
+
+this.input1.nativeElement.addEventListener('focusout', () => {
+  // Convert the value to uppercase
+  const uppercaseValue = this.input1.nativeElement.value.toUpperCase();
+
+  // Update the field with the uppercase value
+  this.input1.nativeElement.value = uppercaseValue;
+});
+
+this.input3.nativeElement.addEventListener('focusout', () => {
+  // Convert the value to uppercase
+  const uppercaseValue = this.input3.nativeElement.value.toUpperCase();
+
+  // Update the field with the uppercase value
+  this.input3.nativeElement.value = uppercaseValue;
+});
+this.input4.nativeElement.addEventListener('focusout', () => {
+  // Convert the value to uppercase
+  const uppercaseValue = this.input4.nativeElement.value.toUpperCase();
+
+  // Update the field with the uppercase value
+  this.input4.nativeElement.value = uppercaseValue;
+});
+
+    this.input2.nativeElement.addEventListener('input', (event: Event) => {
+      const inputValue: string = this.input2.nativeElement.value;
+      if (inputValue.length === 2 && parseInt(inputValue) > 12) {
+        this.input2.nativeElement.value = '0' + inputValue + '/';
+        this.input2.nativeElement.selectionStart = 3;
+        this.input2.nativeElement.selectionEnd = 3;
+      } else if (inputValue.length === 4 && !inputValue.includes('/', 2)) {
+        const month = inputValue.substring(0, 2);
+        const day = inputValue.substring(2, 4);
+        this.input2.nativeElement.value = month + '/' + day + '/';
+        this.input2.nativeElement.selectionStart = 6;
+        this.input2.nativeElement.selectionEnd = 6;
       }
     });
-
+  
     this.input2.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault();
-        if (!this.form.controls['date'].invalid) {
-          this.input3.nativeElement.focus();
-        }
+        // Assuming `input3` is the desired input field to focus on next
+        this.input3.nativeElement.focus();
       }
     });
 
@@ -614,12 +707,15 @@ export class createModalComapnyDetailComponent implements OnInit {
         } // Optionally, you can blur the last input field
         // Perform any additional actions here
       }
+      
     });
     this.input4.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault();
         if (this.input4.nativeElement.value) {
           this.input5.nativeElement.focus();
+          this.input5.nativeElement.select();
+
         } // Optionally, you can blur the last input field
         // Perform any additional actions here
       }
@@ -628,28 +724,47 @@ export class createModalComapnyDetailComponent implements OnInit {
       if (event.key === 'Enter') {
 
         event.preventDefault();
-        if (this.input5.nativeElement.value) {
+        const inputValue = this.input5.nativeElement.value;
+        const pattern = /^\d+$/; 
+        if (inputValue && pattern.test(inputValue)) {
         this.input6.nativeElement.focus();
+        this.input6.nativeElement.select();
+
       } // Optionally, you can blur the last input field
         // Perform any additional actions here
       }
     });
     this.input6.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
-
         event.preventDefault();
-        if (this.input6.nativeElement.value) {
-        this.input7.nativeElement.focus();
-      } // Optionally, you can blur the last input field
-        // Perform any additional actions here
+        const inputValue = this.input6.nativeElement.value;
+        const pattern = /^\d+$/; // Regular expression to match only numbers
+      
+        if (inputValue && pattern.test(inputValue)) {
+          this.input7.nativeElement.focus();
+          this.input7.nativeElement.select();
+        }
       }
     });
     this.input7.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
 
         event.preventDefault();
-        if (this.input7.nativeElement.value) {
-        this.input9.nativeElement.focus();
+        const inputValue = this.input7.nativeElement.value;
+        const pattern = /^\d+(\.\d+)?$/;
+        if (inputValue && pattern.test(inputValue)) {
+        this.input8.nativeElement.focus();
+      } // Optionally, you can blur the last input field
+        // Perform any additional actions here
+      }
+    });
+
+    this.input8.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+
+        event.preventDefault();
+        if (this.input8.nativeElement.value) {
+        this.input10.nativeElement.focus();
       } // Optionally, you can blur the last input field
         // Perform any additional actions here
       }
@@ -664,20 +779,35 @@ export class createModalComapnyDetailComponent implements OnInit {
     //     // Perform any additional actions here
     //   }
     // });
-    this.input9.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
+    // this.input10.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+    //   if (event.key === 'Enter') {
 
-        event.preventDefault();
-        this.onSaveClick();
+    //     event.preventDefault();
+    //     this.onSaveClick();
         
-        this.input1.nativeElement.focus();
-       // Optionally, you can blur the last input field
-        // Perform any additional actions here
-      }
-    });
+    //     this.input1.nativeElement.focus();
+    //    // Optionally, you can blur the last input field
+    //     // Perform any additional actions here
+    //   }
+    // });
   }
+
+  // attachSaveClickListener(): void {
+  //   this.input10.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+  //     if (event.key === 'Enter') {
+  //       event.preventDefault();
+  //       this.onSaveClick();
+
+  //       this.input1.nativeElement.focus();
+       
+  //     }
+  //   });
+  // }
+
   form: FormGroup;
   constructor(
+    private _snackBar: MatSnackBar,
+    private http: HttpClient,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
     public dialogRef: MatDialogRef<createModalComapnyDetailComponent>,
@@ -690,33 +820,34 @@ export class createModalComapnyDetailComponent implements OnInit {
     
     this.form = this.formBuilder.group({
       date: this.dateControl,
-      cno: ['', Validators.required],
-      dummy1: ['', Validators.required],
-      dummy2: ['', Validators.required],
-      dummy3: [1, Validators.required],
-      dummy4: [130, Validators.required],
-      dummy5: [0, Validators.required],
-      //dummy6: [100, Validators.required],
-      dummy7: { value: '0', disabled: true }
+      cnumber: ['', Validators.required],
+      destination: ['', Validators.required],
+      type: ['', Validators.required],
+      pc: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+      rate: [130, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+      weight: [0.1, [Validators.required, Validators.pattern(/^\d+(\.\d+)?$/)]],
+      //amount: [100, Validators.required],
+      amount: { value: '0', disabled: true },
+      couriercode:['', Validators.required]
  
     });
     this.calculateAmount();
-    this.form.get('dummy3')!.valueChanges.subscribe(() => this.calculateAmount());
-    this.form.get('dummy4')!.valueChanges.subscribe(() => this.calculateAmount());
-    this.form.get('dummy5')!.valueChanges.subscribe(() => this.calculateAmount());
-    // this.form.get('dummy6')!.valueChanges.subscribe(() => this.calculateAmount());
+    this.form.get('pc')!.valueChanges.subscribe(() => this.calculateAmount());
+    this.form.get('rate')!.valueChanges.subscribe(() => this.calculateAmount());
+    this.form.get('weight')!.valueChanges.subscribe(() => this.calculateAmount());
+    // this.form.get('amount')!.valueChanges.subscribe(() => this.calculateAmount());
   }
 
   calculateAmount(): void {
-    const pc = this.form.get('dummy3')!.value;
-    const rate = this.form.get('dummy4')!.value;
-    const kg = this.form.get('dummy5')!.value;
-    //const gm = this.form.get('dummy6')!.value;
+    const pc = this.form.get('pc')!.value;
+    const rate = this.form.get('rate')!.value;
+    const kg = this.form.get('weight')!.value;
+    //const gm = this.form.get('amount')!.value;
   
     // Perform the calculation
     const amount = pc * ((kg * 1000) / 1000) * rate;
   
-    this.form.get('dummy7')!.setValue(amount);
+    this.form.get('amount')!.setValue(amount);
   }
   
 
@@ -729,32 +860,108 @@ export class createModalComapnyDetailComponent implements OnInit {
       // Form has errors, handle accordingly (e.g., show error message)
       return;
     }
-    const dateValue = this.form.get('date')?.value; // Get the current value of the date field
-    const updatedRecord = this.form.value;
-    console.log(updatedRecord);
     
-    this.form.reset();
-    this.form.get('date')?.setValue(dateValue);
-    this.form.get('dummy3')?.setValue(1)
-    this.form.get('dummy4')?.setValue(130)
-    this.form.get('dummy5')?.setValue(0)
-    //this.form.get('dummy6')?.setValue(100)
-    const firstInputElement = this.elementRef.nativeElement.querySelector('input');
-    if (firstInputElement) {
-      this.renderer.selectRootElement(firstInputElement).focus();
+
+    const dateValue = this.form.get('date')?.value; 
+    // Get the current value of the date field
+    const cnumber = this.form.get('cnumber')?.value;
+    const destination = this.form.get('destination')?.value;
+    const type = this.form.get('type')?.value;
+    this.form.get('cnumber')?.setValue(cnumber.toUpperCase());
+    this.form.get('destination')?.setValue(destination.toUpperCase());
+    this.form.get('type')?.setValue(type.toUpperCase());
+
+
+    this.form.get('amount')!.enable();
+    const updatedRecord = this.form.value;
+    let bodyData={
+      "cnumber": updatedRecord.cnumber,
+      "date": updatedRecord.date,
+      "destination":updatedRecord.destination,
+      "type":updatedRecord.type,
+      "pc":updatedRecord.pc,
+      "rate":updatedRecord.rate,
+      "weight":updatedRecord.weight,
+      "amount":updatedRecord.amount,
+      "couriercode":updatedRecord.couriercode
     }
+    console.log(updatedRecord);
+    console.log(bodyData);
+    let isError = false;
+
+
+    const endpoint = "http://localhost:9002/courierdata/create/122256";
+
+    this.http.post(endpoint,bodyData).subscribe((data:any)=>{
+      console.log(data)
+      if(data.status==200){
+        this._snackBar.open(data.message,'Dismiss',{
+          duration: 4000,
+          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          // verticalPosition: 'top',
+          panelClass: ['custom-snackbar']
+        })
+        this.form.get('amount')!.disable();
+        this.form.reset();
+        this.form.get('date')?.setValue(dateValue);
+        this.form.get('pc')?.setValue(1)
+        this.form.get('rate')?.setValue(130)
+        this.form.get('weight')?.setValue(0.1)
+        isError = false;
+        
+        //this.form.get('amount')?.setValue(100)
+        const firstInputElement = this.elementRef.nativeElement.querySelector('input');
+        if (firstInputElement) {
+          this.renderer.selectRootElement(firstInputElement).focus();
+        }
+      }
+    
+    },(err:any)=>{
+     if(err.status==404){
+      this.form.get('amount')!.disable();
+      const firstInputElement = this.elementRef.nativeElement.querySelector('input');
+      if (firstInputElement) {
+        this.renderer.selectRootElement(firstInputElement).focus();
+        this.renderer.selectRootElement(firstInputElement).select();
+      }
+      isError = true;
+        this._snackBar.open(err.error.message,'Dismiss',{
+          duration: 4000,
+          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          // verticalPosition: 'top',
+          panelClass: ['custom-snackbar']
+        })
+      }
+      else{
+      
+      
+        this._snackBar.open(err.error.message,'Dismiss',{
+          duration: 4000,
+          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          // verticalPosition: 'top',
+          panelClass: ['custom-snackbar']
+        })
+      }
+    })
+    if (!isError) {
+    console.log('hello')
+    }
+    
+    
+    
 
   }
 
-  // filterType(event: Event){
-  //   const value = (event.target as HTMLInputElement).value;
-  //   const filterValue = value.toLowerCase();
-  //   this.availableType=['DOX','NON-DOX']
-  //   .filter(type => type.toLowerCase().includes(filterValue));
-  // }
+ 
+  filterCourierCode(event:any){
+    const filterValue = event.target.value.toLowerCase();
+    this.availableCourierCode = ['dtdc','trackon','bluedart']
+      .filter(type => type.toLowerCase().includes(filterValue));
+  }
+
   filterType(event: any) {
     const filterValue = event.target.value.toLowerCase();
-    this.availableType = ['DOX', 'NON-DOX']
+    this.availableType = ['NDOX', 'DOX']
       .filter(type => type.toLowerCase().includes(filterValue));
   }
   
@@ -766,14 +973,6 @@ export class createModalComapnyDetailComponent implements OnInit {
       .filter(destination => destination.toLowerCase().includes(filterValue));
   }
 
-  // filterDestinations(event: Event) {
-  //   const value = (event.target as HTMLInputElement).value;
-  //   const filterValue = value.toLowerCase();
-  //   const filteredDestinations = ['MUM', 'DEl', 'BAN', 'CHE', 'SUR', 'RAJ', 'JAI', 'COI', 'PAT', 'PUN', 'HYD', 'AHM', 'THI', 'MAN', 'VAD', 'KNP', 'TRI', 'IND', 'COC', 'KOL', 'AMR', 'BHO', 'MAL', 'RAI', 'GUW', 'LUC', 'THR', 'BHU', 'VAR', 'CAL', 'VIZ', 'SRI', 'PAL', 'KOT', 'KAN', 'AUR', 'RAN', 'DIL', 'JAM', 'SHI']
-  //     .filter(destination => destination.toLowerCase().includes(filterValue));
-    
-  //   this.availableDestinations = filteredDestinations.slice(0, 3);
-  // }
-  
+ 
 }
 

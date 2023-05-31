@@ -6,99 +6,87 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </mat-toolbar>
-  
 </div>
 
-<div class="modal-body p-3" >
+<div class="modal-body p-3">
   <form [formGroup]="form">
     <div class="row">
       <div class="col-md-6 form-group">
-        <label for="cno">C/NO.</label>
-        <input  #input1  type="text" class="form-control" id="cno" formControlName="cno" cdkFocusInitial (keydown)="addEventListeners()"  [ngClass]="{'ng-invalid': form.controls['cno'].invalid && (form.controls['cno'].dirty || form.controls['cno'].touched)}">
-        <!-- <mat-error *ngIf="form.controls['cno'].hasError('required') && (form.controls['cno'].dirty || form.controls['cno'].touched)">
-            CNO is required.
-          </mat-error> -->
+        <label for="cnumber">C/NO.</label>
+        <input #input1 type="text" class="form-control" id="cnumber" formControlName="cnumber" cdkFocusInitial (keydown)="addEventListeners()" [ngClass]="{'ng-invalid': form.controls['cnumber'].invalid && (form.controls['cnumber'].dirty || form.controls['cnumber'].touched)}">
+        <!-- <mat-error *ngIf="form.controls['cnumber'].hasError('required') && (form.controls['cnumber'].dirty || form.controls['cnumber'].touched)">
+          CNO is required.
+        </mat-error> -->
       </div>
-    
+
       <div class="col-md-6 form-group">
         <label for="date">Date</label>
         <div class="input-group">
-          <input #input2  matInput type="text" class="form-control datepicker" id="date"  (keydown)="addEventListeners()" formControlName="date" [matDatepicker]="picker1">
+          <input #input2 matInput type="text" class="form-control datepicker" id="date" (keydown)="addEventListeners()" formControlName="date" [matDatepicker]="picker1">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </div>
       </div>
     </div>
-    <!-- <div class="row">
-      <div class="col-md-12 form-group">
-        <label for="name">C/NO.</label>
-        <input type="text" class="form-control" id="name" formControlName="cno">
-      </div>
-    </div> -->
-    <div class="row">
-      <!-- <div class="col-md-4 form-group">
-        <label for="dummy1">DESTINATION</label>
-        <input type="text" class="form-control" id="dummy1" formControlName="dummy1" >
-      </div> -->
-      <div class="col-md-4 form-group">
-        <label for="dummy1">DESTINATION</label>
-        <input #input3 type="text" class="form-control" id="dummy1" formControlName="dummy1" (keydown)="addEventListeners()" [matAutocomplete]="destinationAuto" (input)="filterDestinations($event)">
-<mat-autocomplete autoActiveFirstOption #destinationAuto="matAutocomplete" class="custom-autocomplete">
-  <mat-option *ngFor="let destination of availableDestinations" [value]="destination">
-    {{ destination }}
-  </mat-option>
-</mat-autocomplete>
 
-      </div>
-      
-      
-      
-      <!-- <label for="dummy1">DESTINATION</label>
-      <input type="text" class="form-control" id="dummy1" [formControl]="destinationControl" [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let destination of filteredDestinations | async" [value]="destination">
-          {{ destination }}
-        </mat-option>
-      </mat-autocomplete> -->
-      
+    <div class="row">
       <div class="col-md-4 form-group">
-        <label for="dummy2">TYPE</label>
-        <input #input4 type="text" class="form-control" id="dummy2" (keydown)="addEventListeners()" formControlName="dummy2" (input)="filterType($event)" [matAutocomplete]="typeAuto">
+        <label for="destination">DESTINATION</label>
+        <input #input3 type="text" class="form-control" id="destination" formControlName="destination" (keydown)="addEventListeners()" [matAutocomplete]="destinationAuto" (input)="filterDestinations($event)">
+        <mat-autocomplete autoActiveFirstOption #destinationAuto="matAutocomplete" class="custom-autocomplete">
+          <mat-option *ngFor="let destination of availableDestinations" [value]="destination">
+            {{ destination }}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+
+      <div class="col-md-4 form-group">
+        <label for="type">TYPE</label>
+        <input #input4 type="text" class="form-control" id="type" (keydown)="addEventListeners()" formControlName="type" (input)="filterType($event)" [matAutocomplete]="typeAuto">
         <mat-autocomplete autoActiveFirstOption #typeAuto="matAutocomplete" class="custom-autocomplete">
           <mat-option *ngFor="let type of availableType" [value]="type">
             {{ type }}
           </mat-option>
         </mat-autocomplete>
       </div>
+
       <div class="col-md-4 form-group">
-        <label for="dummy3">PC</label>
-        <input #input5 type="text" class="form-control" id="dummy3" (keydown)="addEventListeners()" formControlName="dummy3">
+        <label for="rate">RATE</label>
+        <input #input5 type="text" class="form-control" id="rate" (keydown)="addEventListeners()" formControlName="rate">
       </div>
     </div>
+
     <div class="row">
-      <div class="col-md-4 form-group">
-        <label for="dummy4">RATE</label>
-        <input #input6 type="text" class="form-control" id="dummy4" (keydown)="addEventListeners()" formControlName="dummy4">
+      <div class="col-md-2 form-group">
+        <label for="pc">PC</label>
+        <input #input6 type="text" class="form-control" id="pc" (keydown)="addEventListeners()" formControlName="pc">
       </div>
-      <div class="col-md-4 form-group">
-        <label for="dummy5">KG </label>
-        <input #input7 type="text" class="form-control" id="dummy5" (keydown)="addEventListeners()" formControlName="dummy5">
+
+      <div class="col-md-3 form-group">
+        <label for="weight">KG</label>
+        <input #input7 type="text" class="form-control" id="weight" (keydown)="addEventListeners()" formControlName="weight">
       </div>
-      <!-- <div class="col-md-2 form-group">
-        <label for="dummy6">gm</label>
-        <input #input8 type="text" class="form-control" id="dummy6" (keydown)="addEventListeners()" formControlName="dummy6">
-      </div> -->
+
+      <div class="col-md-3 form-group">
+        <label for="couriercode">Courier Code</label>
+        <input #input8 type="text" class="form-control" id="couriercode" (keydown)="addEventListeners()" formControlName="couriercode" (input)="filterCourierCode($event)" [matAutocomplete]="courierCodeAuto">
+        <mat-autocomplete autoActiveFirstOption #courierCodeAuto="matAutocomplete" class="custom-autocomplete">
+          <mat-option *ngFor="let couriercode of availableCourierCode" [value]="couriercode">
+            {{ couriercode }}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+
       <div class="col-md-4 form-group">
-        <label for="dummy7">AMOUNT</label>
-        <input #input9 type="text" class="form-control" id="dummy7" (keydown)="addEventListeners()" formControlName="dummy7"  >
+        <label for="amount">AMOUNT</label>
+        <input #input9 type="text" class="form-control" id="amount" (keydown)="addEventListeners()" formControlName="amount">
+      </div>
+    </div>
+
+    <div class="modal-content">
+      <div class="modal-footer">
+        <button #input10 type="button" class="btn btn-primary"  (click)="onSaveClick()" [disabled]="form.invalid">Save</button>
       </div>
     </div>
   </form>
-
-<div class="modal-content">
-<div class="modal-footer">
-  <button #input9 type="button" class="btn btn-primary"  (keydown)="addEventListeners()" (click)="onSaveClick()" [disabled]="form.invalid"> Save</button>
-  <!-- <button type="button" class="btn btn-secondary" (click)="onCancelClick()" style="margin-left: 10px;">Cancel</button> -->
-</div>
-</div>
 </div>

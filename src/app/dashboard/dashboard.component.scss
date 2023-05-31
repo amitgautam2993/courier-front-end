@@ -66,3 +66,20 @@ label {
   background-color: #ff0000 !important; /* Set the desired background color */
   color: #ffffff !important; /* Set the desired text color */
 }
+
+.custom-spinner {
+ 
+  background-image: url('../../icons/loadingTruck.gif');
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-position: center;
+
+  
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh; /* Adjust as needed */
+}

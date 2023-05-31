@@ -16,6 +16,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   providers:[AuthGuard]
 })
 export class DashboardComponent implements OnInit {
+  showCustomSpinner = true;
+
 backtodashboard() {
 throw new Error('Method not implemented.');
 }
@@ -112,6 +114,7 @@ email: string='';
 owner:string='';
 company:string='';
 address:string='';
+shippercode:string='';
 
   constructor(private _snackBar: MatSnackBar,private http: HttpClient,private dialogRef: MatDialogRef<ModalDashboardComponent>) {}
   @Output() getCards = new EventEmitter<any>();
@@ -123,7 +126,8 @@ onsubmit(){
 
     email: this.email,
     
-    address: this.address
+    address: this.address,
+    shippercode:this.shippercode
 
   };
   this.http.post("http://localhost:9002/companies/create", bodyData).subscribe((resultData: any) => {
