@@ -38,7 +38,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {trackingModalComapnyDetailComponent} from './company-details-component/company-details-component.component'
 import { DatePipe } from '@angular/common';
 import { AutofocusDirective } from './directives/autofocus/autofocus.directive';
-
+import { deleteModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
 
 
 
@@ -62,6 +62,7 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     editModalComapnyDetailComponent,
     createModalComapnyDetailComponent,
     trackingModalComapnyDetailComponent,
+    deleteModalComapnyDetailComponent,
     AutofocusDirective
   ],
   imports: [

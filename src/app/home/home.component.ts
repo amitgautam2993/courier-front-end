@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
-
+import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
+import { RegisterComponent } from '../register/register.component';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-home',
@@ -9,12 +10,34 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  constructor(private router: Router){}
+  constructor(private router: Router,public dialog: MatDialog){}
 singup() {
-this.router.navigateByUrl("/register")
+
+  this.dialog.open(RegisterComponent,{
+    autoFocus:false,
+    height:'710px',
+    width:'500px',
+    panelClass:[],
+    data:{
+
+    }
+  })
+ 
+
+//this.router.navigateByUrl("/register")
 }
 login() {
-  this.router.navigateByUrl("/login")
+  this.dialog.open(LoginComponent,{
+    autoFocus:false,
+    height:'300px',
+    width:'300px',
+    panelClass:[],
+    data:{
+
+    }
+  })
+  this.dialog.closeAll
+  //this.router.navigateByUrl("/login")
 
 }
 

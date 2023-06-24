@@ -1,32 +1,71 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
-<mat-toolbar color="primary" >
-    <h4>Add Company</h4>
+<div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
+  <mat-toolbar color="primary">
+    <h4 class="modal-title">Add Company</h4>
     <span class="spacer"></span>
     <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" (click)="close()">
       <span aria-hidden="true">&times;</span>
     </button>
-</mat-toolbar>
+  </mat-toolbar>
 </div>
-<div class="example-container" >
-    <mat-form-field >
-      <input matInput placeholder="Company Name" [(ngModel)]="company" >
-    </mat-form-field>
-   
-    <mat-form-field>
-        <input matInput placeholder="Owner Name" [(ngModel)]="owner" >
-      </mat-form-field>
-  
-  
-        <mat-form-field>
-            <input matInput placeholder="Email" [(ngModel)]="email">
-          </mat-form-field>
-   
 
-        <mat-form-field>
-            <input matInput placeholder="Address" [(ngModel)]="address">
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Shipper Code" [(ngModel)]="shippercode">
-          </mat-form-field>
-  </div>
-  <button  mat-raised-button color="accent" (click)="onsubmit()">Save</button>
+<div class="modal-body p-3">
+  <form [formGroup]="form">
+    
+    <div class="row">
+      <div class="col-md-12 form-group" >
+        <label>Company</label>
+        <input class="form-control" formControlName="company" id="company" cdkFocusInitial>
+      </div>
+   
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label>First Name</label>
+        <input class="form-control"  formControlName="firstname" id="firstname">
+      </div>
+      <div class="col-md-6 form-group">
+        <label>Last Name</label>
+        <input class="form-control"  formControlName="lastname" id="lastname">
+      </div>
+      <div class="col-md-8 form-group">
+        <label>Email</label>
+        <input class="form-control" formControlName="email" id="email">
+      </div>
+      <div class="col-md-4 form-group">
+        <label>Shipper Code</label>
+        <input class="form-control" formControlName="shippercode" id="shippercode">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <label>Address</label>
+        <textarea class="form-control" formControlName="address" id="address"></textarea>
+      </div>
+      <div class="col-md-6 form-group">
+        <label>City</label>
+        <input class="form-control" formControlName="city" id="city">
+      </div>
+      <div class="col-md-6 form-group">
+        <label>State</label>
+        <input class="form-control" formControlName="state" id="state">
+      </div>
+      <div class="col-md-6 form-group">
+        <label>Postal Code</label>
+        <input class="form-control" formControlName="postalcode" id="postalcode">
+      </div>
+      <div class="col-md-6 form-group">
+        <label>Country</label>
+        <input class="form-control" formControlName="country" id="country">
+      </div>
+    
+    </div>
+
+    <div class="modal-content">
+      <div class="modal-footer">
+        <button mat-raised-button color="accent" (click)="onsubmit()" [disabled]="form.invalid">Save</button>
+      </div>
+    </div>
+  </form>
+</div>

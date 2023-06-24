@@ -11,8 +11,8 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 //import {FocusDirective} from '../directives/autofocus/autofocus.directive'
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-
+import { removeUserDetails } from '../localStorageService';
+import { getUserDetails } from '../localStorageService';
 
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
@@ -41,8 +41,14 @@ data: any;
 selectedRow: any;
 isHovered = false;
 dataFound!: boolean
-
-
+shippercode:string=''
+header:string=''
+monthYear:string=''
+year:any
+month:any
+monthNumber:any
+date:any
+  newInvoiceNumber: any;
 //constructor
   constructor(private _snackBar: MatSnackBar,private http: HttpClient,public dialog: MatDialog,private route: ActivatedRoute,private router: Router,private formBuilder: FormBuilder,private authService: AuthService,private datePipe: DatePipe) {
     this.searchTerm = '';
@@ -51,10 +57,19 @@ dataFound!: boolean
 
 //ngOnInitpd
   ngOnInit() {
+    // this.header=getUserDetails().fname
+    this.header=`${getUserDetails().firstname.toUpperCase()} ${getUserDetails().lastname.toUpperCase()}`
     
     // console.log(amountInWords)
     this.cardData = history.state['cardData'];
-    console.log(this.cardData)
+    //console.log(this.cardData)
+    this.shippercode=history.state['cardData'].shippercode;
+   // console.log(this.shippercode)
+   const currentDate = new Date();
+
+   //console.log(currentDate) // Get the current date
+const currentYear = currentDate.getFullYear(); // Get the current year
+const currentMonth = currentDate.getMonth() + 1;
     this.dateRange = this.formBuilder.group({
       fromDate: '',
       toDate: ''
@@ -68,18 +83,25 @@ dataFound!: boolean
     //   this.filterData();
     // });
     this.dateRange.valueChanges.subscribe(value => {
-      console.log('Selected date range: ', value.fromDate.toISOString(), ' to ', value.toDate.toISOString());
-    
+    console.log('Selected date range: ', value.fromDate.toISOString(), ' to ', value.toDate.toISOString());
+      //console.log(value.fromDate.toISOString())
       // Make an API call with the selected dates
       const fromDate = value.fromDate.toISOString();
+      const dateObject = new Date(fromDate); // Create a Date object from the fromDate string
+      this.date=dateObject.getDate();
+       this.year = dateObject.getFullYear(); // Get the year from the Date object
+      this.month = dateObject.toLocaleString('default', { month: 'short' }); // Get the month as a character
+      this.monthNumber  = dateObject.getMonth() + 1; // get the month as a number
+      this.monthYear=`${this.month} ${this.year}`
+      //console.log(this.monthYear)
       const toDate = value.toDate.toISOString();
-    
+     
       // Construct the API endpoint with query parameters
-      const endpoint = `http://localhost:9002/courierdata/daterange/122256?from=${fromDate}&to=${toDate}`;
+      const endpoint = `http://localhost:9002/courierdata/daterange/${this.shippercode}?from=${fromDate}&to=${toDate}`;
     
       // Make the API call using the Angular Router
       this.http.get<any>(endpoint).subscribe(data => {
-      console.log(data.data.courierDetails) 
+     // console.log(data.data.courierDetails) 
          
       this.dataFound=true; 
       this.dummyData= data.data.courierDetails
@@ -116,9 +138,17 @@ dataFound!: boolean
     // Initialize searchTerm to empty string if it is undefined
     this.searchTerm = this.searchTerm || '';
     this.filterData();
-   
+    this.newInvoiceNumber = this.generateInvoiceNumber();
   }
-
+  
+   generateInvoiceNumber() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const date = currentDate.getDate().toString().padStart(2, '0');
+    const invoiceNumber = `${year}${month}${date}-${this.cardData.shippercode}`;
+    return invoiceNumber;
+  }
   onRowHover(record: any, isHovered: boolean) {
     if (isHovered) {
       this.selectedRow = record;
@@ -133,7 +163,6 @@ dataFound!: boolean
   //refresh function
 refresh() {
   window.location.reload();
-
 }
 
 // create function
@@ -141,6 +170,7 @@ refresh() {
 
 //logout function
 logout() {
+  removeUserDetails();
   this.authService.logout();
   this.router.navigate(['/home'])
 }
@@ -159,22 +189,23 @@ generatePDF() {
   const documentDefinition: TDocumentDefinitions = {
     content: [
       {
-        text: 'JAN 2020',
+        text: `${this.monthYear}`,
         style: 'subheader',
         alignment: 'center',
       },
       {
-        text: 'JC ENTERPRISES',
+        text: `${getUserDetails().firstname.toUpperCase()} ${getUserDetails().lastname.toUpperCase()}`
+        ,
         style: 'header',
         alignment: 'center',
       },
       {
-        text: 'R-20,SRINIWASPURI EXTN. NEW DELHI-110065',
+        text: `${getUserDetails().address.toUpperCase()}, ${getUserDetails().city.toUpperCase()}-${getUserDetails().postalcode}`,
         style: 'subheader',
         alignment: 'center',
       },
       {
-        text: 'Email: Sanjaygautam2567@gmail.com',
+        text: `EMAIL: ${getUserDetails().email.toUpperCase()}`,
         style: 'subheader',
         alignment: 'center',
       },
@@ -190,11 +221,11 @@ generatePDF() {
         alignment: 'justify',
         columns: [
           {
-            text: 'M/S PGDAV COLLEGE(EVEN.)\nMAIN ROAD NEHRU NAGAR \nNEW DELHI -110065\nPAGE: 1',
+            text: [`${this.cardData.company}\n${this.cardData.address} \n${this.cardData.city} - ${this.cardData.postalcode}\nPAGE: 1`],
             alignment: 'left',
           },
           {
-            text: ['Invoice: 104\nBRANCH CODE: SG\n SHIPPER CODE: PGDAV\nPERIOD:',{text:'2023'}],
+            text: [`INVOICE: ${this.newInvoiceNumber}\nBRANCH CODE: ${getUserDetails().branchcode}\n SHIPPER CODE: ${this.cardData.shippercode}\nPERIOD: `,{text:`${this.year}`}],
             alignment: 'right',
           },
         ],
@@ -211,6 +242,7 @@ generatePDF() {
             ['S.NO.', 'C/N NO.', 'DATE','DEST', 'TYPE', 'PC','RATE', 'WEIGHT', 'AMOUNT',],
             ...this.dummyData.map((data,index) => [index + 1, data.cnumber, this.datePipe.transform(data.date, 'MM/dd/yyyy'),  data.destination,data.type,data.pc,data.rate+'/-',data.weight+'Kg',data.amount+'.00']),
           ],
+          widths: ['auto', 90, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 50]
         },layout: 'lightHorizontalLines'
       },
       {canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595-2*40, y2: 5, lineWidth: 2 }]
@@ -235,7 +267,7 @@ generatePDF() {
 			
 ,			columns: [
 				{
-					text:['Ruppes GROSS TOTAL : ',{text: this.totalamountWords,bold:true,fontSize:10}]
+					text:['Ruppes GROSS TOTAL : ',{text: this.totalamountWords+' ONLY',bold:true,fontSize:10}]
 					
 					
 					
@@ -249,9 +281,11 @@ generatePDF() {
 			]
 		},
     {
-      text:['FOR : ',{text:this.cardData.Ownername}],
+      // text:['FOR : ',{text:this.cardData.firstname +' '+ this.cardData.lastname }],
+      text:['FOR : ',{text:getUserDetails().firstname.toUpperCase() +' '+ getUserDetails().lastname.toUpperCase(),bold:true }],
       alignment:'right',
-      margin:[0,10,0,0]
+      margin:[0,10,0,0],
+      
   },
   {
       text:'Authorized Signatory',
@@ -260,12 +294,12 @@ generatePDF() {
   },
   {text: 'Term & Condition',bold:true},
   {
-    ul: [
-      `item 1jjjjjjjjjjjjjjjjjjjjjbbbkhkjhjhjhkj:${this.cardData.Ownername}`,
-      'item 2khkhjhjhkjhkjhkjhjkhkjhjkhkjhkjhkjhkj',
-      'item 3hkhkjhkjhjkhkjhkjhkjhkjhkjhkjhjkhkjh',
-      'item 1uhkjhjkhkjhjkhkjhkjhjkhuhkhjhjkhjhkjhkj',
-      'item 2hgbkjhkjhkjhkjhkjhihkhkhuhkjhhkhlihlihhj',
+    ul: ['Payment should be made to authorized to officer only against official receipt.',
+      `Please pay by cheque/draft in favour of ${getUserDetails().firstname.toUpperCase()} ${getUserDetails().lastname.toUpperCase()}.`,
+      'Payment should be made within 7 days from the date of bill.',
+      'Late payments are subject to an interest charges 2% per month.',
+      'All disputes subject to Delhi junction',
+      
       
     ]
   }
@@ -285,6 +319,13 @@ generatePDF() {
         margin: [3, 10, 0, 0],
       },
     },
+    footer: (currentPage, pageCount) => {
+      return {
+        text: `Page ${currentPage.toString()} of ${pageCount.toString()}`,
+        alignment: 'right',
+        margin: [10, 20],
+      };
+    }
   };
 
   // Generate the PDF and provide a download link
@@ -300,7 +341,7 @@ totalamountNumber:any
 //getDisplayedIdSum function
 getDisplayedIdSum() {
   var upperString=''
-  console.log(this.filteredData.reduce((acc, curr) => acc + curr.pc, 0))
+  //console.log(this.filteredData.reduce((acc, curr) => acc + curr.pc, 0))
   this.totalpacket= this.filteredData.reduce((acc, curr) => acc + curr.pc, 0);
   const numWords = require('num-words')
   upperString = numWords(this.filteredData.reduce((acc, curr) => acc + curr.amount, 0));
@@ -349,48 +390,49 @@ sortData() {
 
   //dummy data function
 
-  generateDummyData(fromDate: string, toDate: string, numRecords: number): any[] {
-    const data: any[] = [];
-    const startDate = new Date(fromDate);
-    const endDate = new Date(toDate);
+  // generateDummyData(fromDate: string, toDate: string, numRecords: number): any[] {
+  //   const data: any[] = [];
+  //   const startDate = new Date(fromDate);
+  //   const endDate = new Date(toDate);
   
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-      console.error('Invalid date format');
-      return data;
-    }
+  //   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+  //     console.error('Invalid date format');
+  //     return data;
+  //   }
   
-    for (let i = 0; i < numRecords; i++) {
-      const date = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
-      const record = {
-        id: i + 1,
-        date: date,
-        cnumber: Math.floor(Math.random() * 1000000000) + 1+`${i + 1}`,
-        destination: (Math.random() + 1).toString(36).substring(9),
-        type: (Math.random() + 1).toString(36).substring(9),
-        pc: Math.floor(Math.random() * 100) + 1,
-        rate: Math.floor(Math.random() * 1000) + 1,
-        weight: Math.floor(Math.random() * 1000) + 1,
-        amount: Math.floor(Math.random() * 10000) + 1,
+  //   for (let i = 0; i < numRecords; i++) {
+  //     const date = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
+  //     const record = {
+  //       id: i + 1,
+  //       date: date,
+  //       cnumber: Math.floor(Math.random() * 1000000000) + 1+`${i + 1}`,
+  //       destination: (Math.random() + 1).toString(36).substring(9),
+  //       type: (Math.random() + 1).toString(36).substring(9),
+  //       pc: Math.floor(Math.random() * 100) + 1,
+  //       rate: Math.floor(Math.random() * 1000) + 1,
+  //       weight: Math.floor(Math.random() * 1000) + 1,
+  //       amount: Math.floor(Math.random() * 10000) + 1,
         
-      };
-      data.push(record);
-    }
+  //     };
+  //     data.push(record);
+  //   }
   
-    // Sort the data by date
-    data.sort((a, b) => {
-      return a.date.getTime() - b.date.getTime();
-    });
+  //   // Sort the data by date
+  //   data.sort((a, b) => {
+  //     return a.date.getTime() - b.date.getTime();
+  //   });
   
-    return data;
-  }
+  //   return data;
+  // }
 
   
 
-  
-  openModal(record:any){
+
+
+  editModal(record:any){
     
     
-    console.log(record)
+    //console.log(record)
     this.dialog.open(editModalComapnyDetailComponent,{
       autoFocus:true,
       height:'400px',
@@ -399,7 +441,7 @@ sortData() {
       disableClose:true,
       data: record // pass record object instead of { data: this.data }
     }).afterClosed().subscribe(res=>{
-      console.log(`Dialog result: ${res}`);
+      //console.log(`Dialog result: ${res}`);
       // this.getCards();
     },);
   }
@@ -411,10 +453,11 @@ sortData() {
       height:'400px',
       width:'500px',
       panelClass:[],
-      
+      data: this.shippercode
       // pass record object instead of { data: this.data }
     }).afterClosed().subscribe(res=>{
-      console.log(`Dialog result: ${res}`);
+      window.location.reload();
+      //console.log(`Dialog result: ${res}`);
       // this.getCards();
     },);
   }
@@ -428,10 +471,38 @@ sortData() {
       data: record,
       // pass record object instead of { data: this.data }
     }).afterClosed().subscribe(res=>{
-      console.log(`Dialog result: ${res}`);
+      window.location.reload();
+      //console.log(`Dialog result: ${res}`);
       // this.getCards();
     },);
   }
+
+  deleteModal(record:any){
+    this.dialog.open(deleteModalComapnyDetailComponent,{
+      autoFocus:true,
+      maxHeight:'315px',
+      width:'380px',
+      panelClass:[],
+      disableClose:true,
+      data: record 
+    }).afterClosed().subscribe(res=>{
+      ///console.log(`Dialog result: ${res}`);
+      // this.getCards();
+    },);
+  }
+}
+@Component({
+  selector: 'modal-app-company-details-component',
+  templateUrl: './delete-modal-company-details-component.component.html',
+  styleUrls: ['./company-details-component.component.scss']
+})
+export class deleteModalComapnyDetailComponent  {
+  cnumber:string=''
+  constructor(@Inject(MAT_DIALOG_DATA) public data:any){
+
+    this.cnumber=data.cnumber
+  }
+
 }
 
 @Component({
@@ -475,14 +546,14 @@ export class trackingModalComapnyDetailComponent implements OnInit{
       // "tracking_number": "d38418282",
       // "carrier_code": "dtdc"
     };
-console.log(bodyData)
+//console.log(bodyData)
     this.http.post("http://localhost:9002/api/trackings/realtime", bodyData)
       .subscribe(
         (response) => {
           // Handle the response here
           this.trackingData=response
           this.isLoading = false;
-          console.log(this.trackingData);
+          //console.log(this.trackingData);
 
         },
         (error) => {
@@ -556,7 +627,7 @@ export class editModalComapnyDetailComponent implements OnInit{
   }
   onSaveClick() {
     const updatedRecord = this.form.value;
-    console.log(updatedRecord);
+    //console.log(updatedRecord);
     this.dialogRef.close(updatedRecord);
   }
 }
@@ -616,27 +687,26 @@ export class editModalComapnyDetailComponent implements OnInit{
 //     // this.dialogRef.close(updatedRecord);
 //   }
 // }
-export class createModalComapnyDetailComponent implements OnInit {
+export class createModalComapnyDetailComponent implements AfterViewInit {
+  shippercode:String=''
   dateControl!: FormControl;
   availableType: string[] = ['NDOX','DOX'];
   availableCourierCode:string[]=['dtdc','trackon','bluedart'];
   availableDestinations: string[] = ['BOM', 'DEl','TMN','UKD','HIM','JOD', 'BAN','CHE','SUR','RAJ','JAI','COI','PAT','PUN','HYD','AHM','THI','MAN','VAD','KNP','TRI','IND','COC','KOL','AMR','BHO','MAL','RAI','GUW','LUC','THR','BHU','VAR','CAL','VIZ','SRI','PAL','KOT','KAN','AUR','RAN','DIL','JAM','SHI'];
-  @ViewChild('input1') input1!: ElementRef;
-  @ViewChild('input2') input2!: ElementRef;
-  @ViewChild('input3') input3!: ElementRef;
-  @ViewChild('input4') input4!: ElementRef;
-  @ViewChild('input5') input5!: ElementRef;
-  @ViewChild('input6') input6!: ElementRef;
-  @ViewChild('input7') input7!: ElementRef;
-  @ViewChild('input8') input8!: ElementRef;
-  @ViewChild('input10') input10!: ElementRef;
+  @ViewChild('input1') input1!: ElementRef<HTMLInputElement>;
+  @ViewChild('input2') input2!: ElementRef<HTMLInputElement>;
+  @ViewChild('input3') input3!: ElementRef<HTMLInputElement>;
+  @ViewChild('input4') input4!: ElementRef<HTMLInputElement>;
+  @ViewChild('input5') input5!: ElementRef<HTMLInputElement>;
+  @ViewChild('input6') input6!: ElementRef<HTMLInputElement>;
+  @ViewChild('input7') input7!: ElementRef<HTMLInputElement>;
+  @ViewChild('input8') input8!: ElementRef<HTMLInputElement>;
+  @ViewChild('input10') input10!: ElementRef<HTMLInputElement>;
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
 
     this.addEventListeners();
-    // this.attachSaveClickListener();
-
-
+    
   }
   
 
@@ -814,8 +884,9 @@ this.input4.nativeElement.addEventListener('focusout', () => {
     private elementRef: ElementRef,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
   ) {
+    this.shippercode=data
     this.dateControl = new FormControl(new Date(), Validators.required);
     
     this.form = this.formBuilder.group({
@@ -885,15 +956,15 @@ this.input4.nativeElement.addEventListener('focusout', () => {
       "amount":updatedRecord.amount,
       "couriercode":updatedRecord.couriercode
     }
-    console.log(updatedRecord);
-    console.log(bodyData);
+    //console.log(updatedRecord);
+   // console.log(bodyData);
     let isError = false;
 
 
-    const endpoint = "http://localhost:9002/courierdata/create/122256";
+    const endpoint = `http://localhost:9002/courierdata/create/${this.shippercode}`;
 
     this.http.post(endpoint,bodyData).subscribe((data:any)=>{
-      console.log(data)
+      //console.log(data)
       if(data.status==200){
         this._snackBar.open(data.message,'Dismiss',{
           duration: 4000,
@@ -944,7 +1015,7 @@ this.input4.nativeElement.addEventListener('focusout', () => {
       }
     })
     if (!isError) {
-    console.log('hello')
+    //console.log('hello')
     }
     
     

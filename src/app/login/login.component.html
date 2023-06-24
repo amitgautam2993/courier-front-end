@@ -1,25 +1,34 @@
-<div class="container">
-    <div class="row">
-        <h2>Login</h2>
-        <hr/>
-    </div>
-      <div class="row">
-           <div class="col-sm-6">
+<div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
+  <mat-toolbar color="primary">
+ 
+    <h4 class="modal-title">User Login</h4>
+    <span class="spacer"></span>
+    <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </mat-toolbar>
+  </div >
+      <div class="modal-body p-3">
+           
               <form>
+                <div class="row">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="text" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" class="form-control" id="stname" placeholder="Enter Email"/>
+                    <label for="exampleInputEmail1">username</label>
+                    <input type="text" [(ngModel)]="username" [ngModelOptions]="{standalone: true}" class="form-control" id="stname" placeholder="Enter Email"/>
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Password</label>
                     <input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" class="form-control" id="stname" placeholder="Enter Password"/>
                   </div>
-                <br>
-                  <div class="form-group">
-                    <button type="submit" class="btn btn-primary" (click)="login()">Login</button>
+              
+                  
+                </div>
+                <div class="modal-content">
+                  <div class="modal-footer">
+                    <button mat-raised-button color="accent" (click)="login()" >Login</button>
                   </div>
-       
+                </div>
+                <!-- <button type="submit" class="btn btn-primary mt-4" (click)="login()">Login</button> -->
                 </form>
-           </div>
+          
       </div>
-  </div>

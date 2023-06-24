@@ -214,3 +214,34 @@ label {
   background-color: #ff0000 !important; /* Set the desired background color */
   color: #ffffff !important; /* Set the desired text color */
 }
+.edit-icon:hover{
+color: #ff0000;
+font-size: 22px;
+}
+.delete-icon:hover{
+  color: #ff0000;
+  font-size: 22px;
+  }
+
+
+  // .redirect-overlay {
+	// position: fixed;
+	//  top: 0;
+	// left: 0;
+	// width: 100%;
+	// height: 100%;
+	// background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity and color as desired */
+	// backdrop-filter: blur(8px); /* Adjust the blur strength as desired */
+	// z-index: 9999;
+	// display: flex;
+	// align-items: center;
+	// justify-content: center;
+
+  // }
+  
+.redirect-container {
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 5px;
+	text-align: center;
+  }

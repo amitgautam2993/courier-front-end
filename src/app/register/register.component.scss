@@ -1,0 +1,11 @@
+.spacer {
+    flex: 1 !important;
+  }
+  .password-mismatch {
+    border: 1px solid red;
+  }
+  .modal-footer {
+    position: absolute;
+    top: 30px;
+    width: 100%;
+  }

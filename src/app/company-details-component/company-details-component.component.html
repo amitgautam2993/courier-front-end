@@ -2,7 +2,7 @@
     <span ><button mat-raised-button (click)="backtodashboard()" >Back</button> </span>
 
     <span style="flex: 1; display: flex; justify-content: center;">
-        <h1>JC Enterprises</h1>
+        <h1>{{header}}</h1>
     </span>
     <span ><button mat-raised-button color="accent"(click)="logout()">logout</button></span>
    
@@ -10,12 +10,12 @@
 </mat-toolbar>
 <mat-toolbar fxLayout="row" fxLayoutAlign="start center">
     
-   <span fxFlex="auto"><h6><b>Company Name:</b> </h6>{{cardData.Companyname}}</span>
+   <span fxFlex="auto"><h6><b>Company Name:</b> </h6>{{cardData.company}}</span>
    <mat-divider vertical></mat-divider>
-   <span fxFlex="auto"><h6><b>Owner Name:</b></h6> {{cardData.Ownername}}</span>
+   <span fxFlex="auto"><h6><b>Owner Name:</b></h6> {{cardData.firstname}} {{cardData.lastname}}</span>
 
    <span fxFlex="auto"><h6><b>Company Address: </b></h6>{{cardData.address}}</span>
-   <span fxFlex="auto"><h6><b>Company Code : </b></h6>{{cardData.companyid}}</span>
+   <span fxFlex="auto"><h6><b>Shipper Code : </b></h6>{{cardData.shippercode}}</span>
    <span fxFlex="auto"><h6><b>Company Email: </b></h6>{{cardData.email}}</span>
 
 </mat-toolbar>
@@ -80,10 +80,11 @@
           <td>{{ record.pc }}</td>
           <td>{{ record.rate }}/-</td>
           <td>{{ record.weight }}kg</td>
-          <td>
+          <td style="text-align: left;">
             {{ record.amount }}.00
             <ng-template #editButton>
-              <mat-icon class="mat-icon-small edit-icon" (click)="openModal(record)">edit</mat-icon>
+              <mat-icon class="mat-icon-small edit-icon" (click)="editModal(record)">edit</mat-icon>
+              <mat-icon class="mat-icon-small delete-icon" (click)="deleteModal(record)">delete</mat-icon>
             </ng-template>
             <ng-container *ngIf="selectedRow === record">
               <ng-container *ngTemplateOutlet="editButton"></ng-container>

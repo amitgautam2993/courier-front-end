@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
   <span ><button mat-raised-button (click)="backtodashboard()"  disabled="true">Back</button> </span>
   <span style="flex: 1; display: flex; justify-content: center;">
-    <h1>JC Enterprises</h1>
+    <h1>{{header}}</h1>
 </span>
     <span ><button mat-raised-button color="accent"(click)="logout()">logout</button></span>
 </mat-toolbar>
@@ -38,15 +38,19 @@
           <mat-icon  *ngIf="card.isHovered">edit</mat-icon>
         </button>
         <mat-card-header>
-          <mat-card-title><h5>{{ card.Companyname }}</h5></mat-card-title>
+          <mat-card-title><h5>{{ card.company }}</h5></mat-card-title>
           
           <!-- <mat-card-subtitle>{{ card.Ownername }}</mat-card-subtitle>
           <mat-card-subtitle>    <span class="spacer"></span>
 </mat-card-subtitle> -->
-          <mat-card-subtitle>{{card.companyid}}</mat-card-subtitle>
+          <mat-card-subtitle>{{card.shippercode}}</mat-card-subtitle>
           
         </mat-card-header>
-        
+        <mat-card-footer style="text-align: right;">
+          <button mat-icon-button class="delete-button" (click)="ondeleteClick(card); $event.stopPropagation()">
+            <mat-icon  *ngIf="card.isHovered">delete</mat-icon>
+          </button>
+        </mat-card-footer>
       </mat-card>
     </div>
   </ng-template>

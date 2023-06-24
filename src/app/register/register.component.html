@@ -1,29 +1,89 @@
-<div class="container mt-4" >
-    <div class="card">
-            <h1>User Registeration</h1>
+<div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
+  <mat-toolbar color="primary">
+    <h4 class="modal-title">User Registration</h4>
+    <span class="spacer"></span>
+    <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </mat-toolbar>
+</div>
+<div class="modal-body p-3">
+   
+            
     
-    <form>
-        <div class="form-group">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-md-12 form-group" >
+          <label>Organistaion Name</label>
+          <input class="form-control" formControlName="organisation" id="organisation"  cdkFocusInitial>
+        </div>
+     
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
           <label>First name</label>
-          <input type="text" [(ngModel)]="firstname" [ngModelOptions]="{standalone: true}" class="form-control" id="stname" placeholder="Enter Name">
+          <input type="text" formControlName="firstname"   class="form-control" id="firstname">
         </div>
 
-        <div class="form-group">
+        <div class="col-md-6 form-group">
             <label>Last name</label>
-            <input type="text" [(ngModel)]="lastname" [ngModelOptions]="{standalone: true}" class="form-control" id="stname" placeholder="Enter Name">
+            <input type="text" formControlName="lastname"  class="form-control" id="lastname" >
           </div>
-    
-        <div class="form-group">
-          <label>email</label>
-          <input type="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" class="form-control" id="course" placeholder="Enter Name">
+    </div>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <label>Email</label>
+        <input class="form-control" formControlName="email" id="email" >
+      </div>
+        <div class="col-md-6 form-group">
+          <label>Username</label>
+          <input type="text"  formControlName="username"   class="form-control" id="username" autocomplete="off">
+        </div>
+        <div class="col-md-6 form-group">
+          <label>Branch Code</label>
+          <input type="text"  formControlName="branchcode"   class="form-control" id="branchcode" >
+        </div>
+      </div>
+      <div class="row">
+        
+        <div class="col-md-6 form-group">
+            <label>Password</label>
+            <input type="password" formControlName="password"  class="form-control" id="password" autocomplete="new-password" [ngClass]="{ 'password-mismatch': form.get('cpassword')?.invalid && form.get('cpassword')?.touched }">
+          </div>
+          <div class="col-md-6 form-group">
+            <label>Confirm Password</label>
+            <input type="password" formControlName="cpassword"class="form-control" id="cpassword" [ngClass]="{ 'password-mismatch': form.get('cpassword')?.invalid && form.get('cpassword')?.touched }">
+          </div>
+        </div>
+        <div class="row">
+       
+          <div class="col-md-12 form-group">
+            <label>Address</label>
+            <textarea class="form-control" formControlName="address" id="address"></textarea>
+          </div>
+          <div class="col-md-6 form-group">
+            <label>City</label>
+            <input class="form-control" formControlName="city" id="city">
+          </div>
+          <div class="col-md-6 form-group">
+            <label>State</label>
+            <input class="form-control" formControlName="state" id="state">
+          </div>
+          <div class="col-md-6 form-group">
+            <label>Postal Code</label>
+            <input class="form-control" formControlName="postalcode" id="postalcode">
+          </div>
+          <div class="col-md-6 form-group">
+            <label>Country</label>
+            <input class="form-control" formControlName="country" id="country">
+          </div>
         </div>
 
-        <div class="form-group">
-            <label>password</label>
-            <input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" class="form-control" id="fee" placeholder="Enter Password">
+        <div class="modal-content">
+          <div class="modal-footer">
+            <button mat-raised-button color="accent" (click)="save()" [disabled]="form.invalid">Save</button>
           </div>
-
-        <button type="submit" class="btn btn-primary mt-4" (click)="save()" >Save</button>
-       
+        </div>
+        <!-- <button  mat-raised-button color="accent" class="btn btn-primary mt-4" [disabled]="form.invalid" (click)="save()" >Save</button> -->
       </form>
     </div>

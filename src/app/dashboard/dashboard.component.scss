@@ -1,5 +1,13 @@
 
+label {
+  margin-top: 0.5rem;
+  font-weight: bold;
 
+}
+.ng-invalid.ng-dirty,
+.ng-invalid.ng-touched {
+  border-color: red;
+}
 .example-fill-remaining-space {
     /* This fills the remaining space, by using flexbox. 
        Every toolbar row uses a flexbox row layout. */
@@ -20,6 +28,7 @@
   display: flex;
   flex-direction: column;
 }
+
 
 .example-container > * {
   width: 100%;
@@ -57,6 +66,21 @@ label {
   z-index: 1;
   pointer-events: auto;
 }
+.edit-button:hover{
+  color: #ff0000;
+}
+.delete-button {
+  position: relative;
+  bottom: 8px;
+  right: 8px;
+  opacity: 1;
+  z-index: 1;
+  pointer-events: auto;
+}
+.delete-button:hover {
+  color: #ff0000;/* Update the opacity value on hover */
+}
+
 .mat-card:hover .edit-button {
   opacity: 1;
 }
@@ -82,4 +106,10 @@ label {
   justify-content: center;
   align-items: center;
   height: 50vh; /* Adjust as needed */
+}
+
+.modal-footer {
+  position: absolute;
+  top: 30px;
+  width: 100%;
 }
