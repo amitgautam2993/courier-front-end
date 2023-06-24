@@ -24,6 +24,7 @@
     "font-awesome": "^4.7.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.28",
+    "moment-timezone": "^0.5.43",
     "ngx-bootstrap": "^10.2.0",
     "num-words": "^1.2.3",
     "pdfmake": "^0.2.7",

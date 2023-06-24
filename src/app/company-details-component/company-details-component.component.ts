@@ -13,7 +13,8 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { removeUserDetails } from '../localStorageService';
 import { getUserDetails } from '../localStorageService';
-
+import * as moment from 'moment';
+import 'moment-timezone';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -83,18 +84,23 @@ const currentMonth = currentDate.getMonth() + 1;
     //   this.filterData();
     // });
     this.dateRange.valueChanges.subscribe(value => {
-    console.log('Selected date range: ', value.fromDate.toISOString(), ' to ', value.toDate.toISOString());
+    console.log('Selected date range: ', value.fromDate.toLocaleDateString(), ' to ', value.toDate.toLocaleDateString());
       //console.log(value.fromDate.toISOString())
       // Make an API call with the selected dates
-      const fromDate = value.fromDate.toISOString();
+
+      const fromDateT = moment(value.fromDate).tz('your-time-zone').startOf('day');
+      const toDateT = moment(value.toDate).tz('your-time-zone').endOf('day');
+      const fromDate = fromDateT.toISOString();
       const dateObject = new Date(fromDate); // Create a Date object from the fromDate string
-      this.date=dateObject.getDate();
-       this.year = dateObject.getFullYear(); // Get the year from the Date object
-      this.month = dateObject.toLocaleString('default', { month: 'short' }); // Get the month as a character
-      this.monthNumber  = dateObject.getMonth() + 1; // get the month as a number
+      this.date=fromDateT.format('DD');
+       this.year = fromDateT.format('YYYY'); // Get the year from the Date object
+      this.month = fromDateT.format('MMM'); // Get the month as a character
+      this.monthNumber  = fromDateT.format('MM');// get the month as a number
       this.monthYear=`${this.month} ${this.year}`
       //console.log(this.monthYear)
-      const toDate = value.toDate.toISOString();
+      const toDate =toDateT.toISOString();
+
+    
      
       // Construct the API endpoint with query parameters
       const endpoint = `http://localhost:9002/courierdata/daterange/${this.shippercode}?from=${fromDate}&to=${toDate}`;
@@ -138,7 +144,7 @@ const currentMonth = currentDate.getMonth() + 1;
     // Initialize searchTerm to empty string if it is undefined
     this.searchTerm = this.searchTerm || '';
     this.filterData();
-    this.newInvoiceNumber = this.generateInvoiceNumber();
+    //this.newInvoiceNumber = this.generateInvoiceNumber();
   }
   
    generateInvoiceNumber() {
@@ -225,7 +231,7 @@ generatePDF() {
             alignment: 'left',
           },
           {
-            text: [`INVOICE: ${this.newInvoiceNumber}\nBRANCH CODE: ${getUserDetails().branchcode}\n SHIPPER CODE: ${this.cardData.shippercode}\nPERIOD: `,{text:`${this.year}`}],
+            text: [`INVOICE: ${this.year+this.monthNumber+this.date+this.cardData.shippercode}\nBRANCH CODE: ${getUserDetails().branchcode}\n SHIPPER CODE: ${this.cardData.shippercode}\nPERIOD: `,{text:`${this.year}`}],
             alignment: 'right',
           },
         ],
@@ -605,6 +611,7 @@ export class editModalComapnyDetailComponent implements OnInit{
 
   
   ngOnInit(): void {
+    console.log(this.data._id)
     this.formattedDate = this.datePipe.transform(this.data.date, 'dd/MM/yyyy') || '';
 
     this.form.patchValue({
