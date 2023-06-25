@@ -246,7 +246,7 @@ generatePDF() {
           headerRows: 1, 
           body: [
             ['S.NO.', 'C/N NO.', 'DATE','DEST', 'TYPE', 'PC','RATE', 'WEIGHT', 'AMOUNT',],
-            ...this.dummyData.map((data,index) => [index + 1, data.cnumber, this.datePipe.transform(data.date, 'MM/dd/yyyy'),  data.destination,data.type,data.pc,data.rate+'/-',data.weight+'Kg',data.amount+'.00']),
+            ...this.dummyData.map((data,index) => [index + 1, data.cnumber, this.datePipe.transform(data.date, 'dd/MM/yyyy'),  data.destination,data.type,data.pc,data.rate+'/-',data.weight+'Kg',data.amount+'.00']),
           ],
           widths: ['auto', 90, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 50]
         },layout: 'lightHorizontalLines'
@@ -448,7 +448,7 @@ sortData() {
       data: record // pass record object instead of { data: this.data }
     }).afterClosed().subscribe(res=>{
       //console.log(`Dialog result: ${res}`);
-      // this.getCards();
+       this.refresh();
     },);
   }
   
@@ -503,11 +503,40 @@ sortData() {
   styleUrls: ['./company-details-component.component.scss']
 })
 export class deleteModalComapnyDetailComponent  {
+  deleteId:string=''
   cnumber:string=''
-  constructor(@Inject(MAT_DIALOG_DATA) public data:any){
-
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data:any,
+    private http: HttpClient,
+    private _snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<deleteModalComapnyDetailComponent>
+  ){
     this.cnumber=data.cnumber
+    this.deleteId=data._id
   }
+
+deleteById(){
+  console.log(this.deleteId)
+  const endpoint = `http://localhost:9002/courierdata/delete/${this.deleteId}`;
+
+  this.http.delete(endpoint).subscribe((response:any)=>{
+    this.dialogRef.close();
+    this._snackBar.open(response.message,'Dismiss',{
+      duration: 4000,
+      //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+      // verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
+    })    
+    
+  },(error)=>{
+    this._snackBar.open(error.message,'Dismiss',{
+      duration: 4000,
+      //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+      // verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
+    })
+  })
+}
 
 }
 
@@ -591,11 +620,14 @@ export class trackingModalComapnyDetailComponent implements OnInit{
 export class editModalComapnyDetailComponent implements OnInit{
   form: FormGroup;
   formattedDate: string = '';
-
+  updateId:string=''
   constructor(public dialogRef: MatDialogRef<editModalComapnyDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder, private datePipe: DatePipe
+    private _snackBar: MatSnackBar,
+    private fb: FormBuilder, private datePipe: DatePipe,
+    private http: HttpClient,
   ) { 
+    this.updateId=data._id
     this.form = this.fb.group({
     
       date: [this.data.date],
@@ -606,12 +638,13 @@ export class editModalComapnyDetailComponent implements OnInit{
       rate: [this.data.rate],
       weight: [this.data.weight],
       amount: [this.data.amount],
+      couriercode:[this.data.couriercode]
     });
   }
 
   
   ngOnInit(): void {
-    console.log(this.data._id)
+    console.log(this.data)
     this.formattedDate = this.datePipe.transform(this.data.date, 'dd/MM/yyyy') || '';
 
     this.form.patchValue({
@@ -624,6 +657,7 @@ export class editModalComapnyDetailComponent implements OnInit{
       rate: this.data.rate || '',
       weight: this.data.weight || '',
       amount: this.data.amount || '',
+      couriercode:this.data.couriercode||''
     });
   }
   
@@ -633,9 +667,65 @@ export class editModalComapnyDetailComponent implements OnInit{
     this.dialogRef.close();
   }
   onSaveClick() {
-    const updatedRecord = this.form.value;
-    //console.log(updatedRecord);
-    this.dialogRef.close(updatedRecord);
+    if (this.form.invalid) {
+      // Form has errors, handle accordingly (e.g., show error message)
+      return;
+    }
+
+
+     const updatedRecord = this.form.value;
+     let bodyData={
+      "cnumber": updatedRecord.cnumber.toUpperCase(),
+      "date": updatedRecord.date,
+      "destination":updatedRecord.destination.toUpperCase(),
+      "type":updatedRecord.type.toUpperCase(),
+      "pc":updatedRecord.pc,
+      "rate":updatedRecord.rate,
+      "weight":updatedRecord.weight,
+      "amount":updatedRecord.amount,
+      "couriercode":updatedRecord.couriercode
+    }
+    const endpoint = `http://localhost:9002/courierdata/update/${this.updateId}`;
+
+    this.http.put(endpoint,bodyData).subscribe((data:any)=>{
+      //console.log(data)
+      if(data.status==200){
+        this.dialogRef.close(updatedRecord);
+        this._snackBar.open(data.message,'Dismiss',{
+          duration: 4000,
+          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          // verticalPosition: 'top',
+          panelClass: ['custom-snackbar']
+        })
+        
+        
+        //this.form.get('amount')?.setValue(100)
+        
+      }
+    
+    },(err:any)=>{
+     if(err.status==404){
+      
+        this._snackBar.open(err.error.message,'Dismiss',{
+          duration: 4000,
+          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          // verticalPosition: 'top',
+          panelClass: ['custom-snackbar']
+        })
+      }
+      else{
+      
+      
+        this._snackBar.open(err.error.message,'Dismiss',{
+          duration: 4000,
+          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          // verticalPosition: 'top',
+          panelClass: ['custom-snackbar']
+        })
+      }
+    })
+
+    // //console.log(updatedRecord);
   }
 }
 
