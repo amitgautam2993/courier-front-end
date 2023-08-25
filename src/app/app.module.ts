@@ -30,7 +30,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core'; // import MatNativeDateModule
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PaginatePipe } from './paginate.pipe';
-import { ModalModule } from 'ngx-bootstrap/modal';
+// import { ModalModule } from 'ngx-bootstrap/modal';
 import { editModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
 import { createModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -88,7 +88,7 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,
-    ModalModule,
+    
     MatAutocompleteModule,
     MatSnackBarModule
 

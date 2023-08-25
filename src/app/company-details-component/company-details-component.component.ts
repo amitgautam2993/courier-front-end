@@ -49,7 +49,9 @@ year:any
 month:any
 monthNumber:any
 date:any
-  newInvoiceNumber: any;
+fromDate:any
+newInvoiceNumber: any;
+toDate: any;
 //constructor
   constructor(private _snackBar: MatSnackBar,private http: HttpClient,public dialog: MatDialog,private route: ActivatedRoute,private router: Router,private formBuilder: FormBuilder,private authService: AuthService,private datePipe: DatePipe) {
     this.searchTerm = '';
@@ -90,52 +92,22 @@ const currentMonth = currentDate.getMonth() + 1;
 
       const fromDateT = moment(value.fromDate).tz('your-time-zone').startOf('day');
       const toDateT = moment(value.toDate).tz('your-time-zone').endOf('day');
-      const fromDate = fromDateT.toISOString();
-      const dateObject = new Date(fromDate); // Create a Date object from the fromDate string
+       this.fromDate = fromDateT.toISOString();
+      const dateObject = new Date(this.fromDate); // Create a Date object from the fromDate string
       this.date=fromDateT.format('DD');
        this.year = fromDateT.format('YYYY'); // Get the year from the Date object
       this.month = fromDateT.format('MMM'); // Get the month as a character
       this.monthNumber  = fromDateT.format('MM');// get the month as a number
       this.monthYear=`${this.month} ${this.year}`
       //console.log(this.monthYear)
-      const toDate =toDateT.toISOString();
-
+      this.toDate =toDateT.toISOString();
+      this.fetchCourierData()
     
      
       // Construct the API endpoint with query parameters
-      const endpoint = `http://localhost:9002/courierdata/daterange/${this.shippercode}?from=${fromDate}&to=${toDate}`;
     
       // Make the API call using the Angular Router
-      this.http.get<any>(endpoint).subscribe(data => {
-     // console.log(data.data.courierDetails) 
-         
-      this.dataFound=true; 
-      this.dummyData= data.data.courierDetails
-      this.filterData();
-      },(error:any)=>{
-        if(error.status==404){
-          this.dummyData=[]
-          this.dataFound=false; 
-          this.filterData();
-
-          this._snackBar.open(error.error.message, 'Dismiss',{
-            duration: 4000,
-        //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-        // verticalPosition: 'top',
-        panelClass: ['custom-snackbar']
-          });  
-        }
-        else {
-          // Handle other error scenarios (status 500, 404, etc.)
-          this.dataFound=false; 
-
-          this._snackBar.open(error.error.message, 'Dismiss',{
-            duration: 4000,
-           
-          });  
-        }
-        //console.log('Error Fetching data:')
-      });
+    
     
     });
     
@@ -145,6 +117,51 @@ const currentMonth = currentDate.getMonth() + 1;
     this.searchTerm = this.searchTerm || '';
     this.filterData();
     //this.newInvoiceNumber = this.generateInvoiceNumber();
+  }
+
+  fetchCourierData(){
+    // if(this.fromDate=='' && this.toDate==''){
+      if(this.toDate.length>0)
+      {
+       
+    const endpoint = `http://localhost:9002/courierdata/daterange/${this.shippercode}?from=${this.fromDate}&to=${this.toDate}`;
+    this.http.get<any>(endpoint).subscribe(data => {
+      // console.log(data.data.courierDetails) 
+          
+       this.dataFound=true; 
+       this.dummyData= data.data.courierDetails
+       this.filterData();
+       },(error:any)=>{
+         if(error.status==404){
+           this.dummyData=[]
+           this.dataFound=false; 
+           this.filterData();
+ 
+           this._snackBar.open(error.error.message, 'Dismiss',{
+             duration: 4000,
+         //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+         // verticalPosition: 'top',
+         panelClass: ['custom-snackbar']
+           });  
+         }
+         else {
+           // Handle other error scenarios (status 500, 404, etc.)
+           this.dataFound=false; 
+ 
+           this._snackBar.open(error.error.message, 'Dismiss',{
+             duration: 4000,
+            
+           });  
+         }
+         //console.log('Error Fetching data:')
+       });
+      }
+      else {
+        this.dataFound=true;
+        this.dummyData=[]
+        this.filterData();
+      }
+
   }
   
    generateInvoiceNumber() {
@@ -168,7 +185,9 @@ const currentMonth = currentDate.getMonth() + 1;
   }
   //refresh function
 refresh() {
-  window.location.reload();
+
+ this.fetchCourierData();
+
 }
 
 // create function
@@ -462,7 +481,7 @@ sortData() {
       data: this.shippercode
       // pass record object instead of { data: this.data }
     }).afterClosed().subscribe(res=>{
-      window.location.reload();
+      this.refresh()
       //console.log(`Dialog result: ${res}`);
       // this.getCards();
     },);
@@ -477,7 +496,7 @@ sortData() {
       data: record,
       // pass record object instead of { data: this.data }
     }).afterClosed().subscribe(res=>{
-      window.location.reload();
+      this.refresh();
       //console.log(`Dialog result: ${res}`);
       // this.getCards();
     },);
@@ -492,6 +511,7 @@ sortData() {
       disableClose:true,
       data: record 
     }).afterClosed().subscribe(res=>{
+      this.refresh()
       ///console.log(`Dialog result: ${res}`);
       // this.getCards();
     },);
