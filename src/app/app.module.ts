@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -39,7 +39,7 @@ import {trackingModalComapnyDetailComponent} from './company-details-component/c
 import { DatePipe } from '@angular/common';
 import { AutofocusDirective } from './directives/autofocus/autofocus.directive';
 import { deleteModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
-
+import{ApiPrefixInterceptor} from './api-prefix.interceptor'
 
 
 import { CompanyDetailsComponentComponent } from './company-details-component/company-details-component.component';
@@ -93,7 +93,7 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     MatSnackBarModule
 
   ],
-  providers: [AuthService,AuthGuard,DatePipe],
+  providers: [AuthService,AuthGuard,DatePipe,{provide:HTTP_INTERCEPTORS, useClass:ApiPrefixInterceptor,multi:true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

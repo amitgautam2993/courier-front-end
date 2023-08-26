@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
 import { storeUserDetails } from '../localStorageService';
+import { ApiService } from '../apiservice.services';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent {
   isLogin: boolean = true;
   erroMessage: string = "";
 
-  constructor(private router: Router,private http: HttpClient,private authService: AuthService,public dialog: MatDialog) {}
+  constructor(private router: Router,private http: HttpClient,private authService: AuthService,public dialog: MatDialog,private apiService: ApiService) {}
 
   login() {
     
@@ -29,7 +30,7 @@ export class LoginComponent {
       password: this.password,
     };
 
-        this.http.post("http://localhost:9002/student/login", bodyData).subscribe(  (resultData: any) => {
+    this.apiService.loginUser(bodyData).subscribe(  (resultData: any) => {
         
 
         if (resultData.status) 
