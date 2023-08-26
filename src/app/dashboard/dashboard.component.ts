@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { removeUserDetails } from '../localStorageService';
 import { getUserDetails } from '../localStorageService';
+import { ApiService } from '../apiservice.services';
 
 
 @Component({
@@ -44,7 +45,8 @@ onCardHover(isHovered: boolean): void {
     //console.log(abc)
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    this.http.get<any>(`http://localhost:9002/companies/get?username=${getUserDetails().username}`).subscribe(data => {
+    // this.http.get<any>(`http://localhost:9002/companies/get?username=${getUserDetails().username}`).subscribe(data => 
+    this.apiService.getCompanies(getUserDetails().username).subscribe(data =>{
       if(data.length!=0){
       this.cards = data[0].companies;      
       this.filteredCards = data[0].companies;}
@@ -61,7 +63,7 @@ onCardHover(isHovered: boolean): void {
   searchQuery: any;
   filteredCards = this.cards;
 
-  constructor(private _snackBar: MatSnackBar,private router: Router,private authService: AuthService,public dialog: MatDialog,private http: HttpClient){}
+  constructor(private apiService: ApiService,private _snackBar: MatSnackBar,private router: Router,private authService: AuthService,public dialog: MatDialog,private http: HttpClient){}
 
   onEditClick(data: any){
     this._snackBar.open('Not Allowed Please Contact Admin', 'Dismiss', {

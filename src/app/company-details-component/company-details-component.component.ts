@@ -124,7 +124,7 @@ const currentMonth = currentDate.getMonth() + 1;
       if(this.toDate.length>0)
       {
        
-    const endpoint = `http://localhost:9002/courierdata/daterange/${this.shippercode}?from=${this.fromDate}&to=${this.toDate}`;
+    const endpoint = `/courierdata/daterange/${this.shippercode}?from=${this.fromDate}&to=${this.toDate}`;
     this.http.get<any>(endpoint).subscribe(data => {
       // console.log(data.data.courierDetails) 
           
@@ -537,7 +537,7 @@ export class deleteModalComapnyDetailComponent  {
 
 deleteById(){
   console.log(this.deleteId)
-  const endpoint = `http://localhost:9002/courierdata/delete/${this.deleteId}`;
+  const endpoint = `/courierdata/delete/${this.deleteId}`;
 
   this.http.delete(endpoint).subscribe((response:any)=>{
     this.dialogRef.close();
@@ -602,7 +602,7 @@ export class trackingModalComapnyDetailComponent implements OnInit{
       // "carrier_code": "dtdc"
     };
 //console.log(bodyData)
-    this.http.post("http://localhost:9002/api/trackings/realtime", bodyData)
+    this.http.post("/api/trackings/realtime", bodyData)
       .subscribe(
         (response) => {
           // Handle the response here
@@ -705,7 +705,7 @@ export class editModalComapnyDetailComponent implements OnInit{
       "amount":updatedRecord.amount,
       "couriercode":updatedRecord.couriercode
     }
-    const endpoint = `http://localhost:9002/courierdata/update/${this.updateId}`;
+    const endpoint = `/courierdata/update/${this.updateId}`;
 
     this.http.put(endpoint,bodyData).subscribe((data:any)=>{
       //console.log(data)
@@ -1078,7 +1078,7 @@ this.input4.nativeElement.addEventListener('focusout', () => {
     let isError = false;
 
 
-    const endpoint = `http://localhost:9002/courierdata/create/${this.shippercode}`;
+    const endpoint = `/courierdata/create/${this.shippercode}`;
 
     this.http.post(endpoint,bodyData).subscribe((data:any)=>{
       //console.log(data)

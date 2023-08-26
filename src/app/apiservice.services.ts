@@ -15,6 +15,16 @@ import { Observable } from 'rxjs';
     loginUser(bodyData: any): Observable<any> {
       return this.http.post(`/student/login`, bodyData);
     }
+
+    createUser(bodyData: any): Observable<any> {
+      return this.http.post(`/student/register`, bodyData);
+    }
+
+    getCompanies(username: string): Observable<any> {
+      const url = `/companies/get?username=${username}`;
+      return this.http.get<any>(url);
+  }
+  
   
     // ... other API methods here
   }
