@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, Validators,AbstractControl } from '@angular/forms';
-import { ApiService } from '../apiservice.services';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +14,7 @@ export class RegisterComponent {
   form: FormGroup;
 
 
-  constructor(private apiService: ApiService,private fb: FormBuilder,private http: HttpClient,private router: Router,public dialog: MatDialog,private _snackBar: MatSnackBar) 
+  constructor(private fb: FormBuilder,private http: HttpClient,private router: Router,public dialog: MatDialog,private _snackBar: MatSnackBar) 
   {
     this.form = this.fb.group({
       organisation: ['', Validators.required],
@@ -65,7 +64,7 @@ export class RegisterComponent {
       password:this.form.value.password,
       username:this.form.value.username
     };
-    this.apiService.createUser(bodyData).subscribe((resultData: any)=>
+    this.http.post("/student/create",bodyData).subscribe((resultData: any)=>
     {
      
         this.dialog.closeAll();
