@@ -248,7 +248,7 @@ export class ModalDashboardComponent{
 
     };
 
-    this.http.post(`http://localhost:9002/companies/create/${getUserDetails().username}`, bodyData).subscribe(
+    this.http.post(`/companies/create/${getUserDetails().username}`, bodyData).subscribe(
       (resultData: any) => {
        // console.log(bodyData)
         //console.log('Status:', resultData.status);
