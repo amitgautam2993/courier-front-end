@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
 import { storeUserDetails } from '../localStorageService';
 import { ApiService } from '../apiservice.services';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -20,10 +20,11 @@ export class LoginComponent {
   isLogin: boolean = true;
   erroMessage: string = "";
 
-  constructor(private router: Router,private http: HttpClient,private authService: AuthService,public dialog: MatDialog,private apiService: ApiService) {}
+  constructor(private router: Router,private authService: AuthService,public dialog: MatDialog,private apiService: ApiService) {}
 
   login() {
     
+    console.log(environment.apiUrl);
 
     let bodyData = {
       username: this.username,

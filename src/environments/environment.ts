@@ -1,6 +1,7 @@
 export const environment = {
-    production: false,
-    apiUrl: 'http://localhost:9002'
+    production: true,
+    apiUrl: 'https://192.168.0.198/track4uBackend'
   };
+  
 
     
