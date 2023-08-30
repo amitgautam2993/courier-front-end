@@ -13,7 +13,7 @@
 <button mat-button (click)="searchCards()">Search</button> -->
 <mat-form-field class="search-box">
     
-    <input matInput type="text" placeholder="Search..." [(ngModel)]="searchQuery" 
+    <input matInput type="search" placeholder="Search..." [(ngModel)]="searchQuery" 
     (ngModelChange)="searchCards(searchQuery)">
  
   </mat-form-field>

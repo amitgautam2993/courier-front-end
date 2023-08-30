@@ -44,3 +44,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --mdc-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
   font-size: 24px;
 }
+input:not([type="search"]):not([type="date"]),textarea {
+  
+
+    border-width: 4px !important;
+
+    border-color: #000 !important;
+  
+}
+.ng-invalid.ng-dirty[_ngcontent-ng-c3819512233], .ng-invalid.ng-touched[_ngcontent-ng-c3819512233] {
+  border-color: rgb(255, 0, 0) !important;
+}
+
+

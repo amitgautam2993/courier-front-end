@@ -1042,6 +1042,28 @@ this.input4.nativeElement.addEventListener('focusout', () => {
   onCancelClick() {
     this.dialogRef.close();
   }
+  
+  private incrementCN(cn: string): string {
+    let prefix = '';
+    let number = '';
+  
+    for (const char of cn) {
+      if (isNaN(Number(char))) {
+        prefix += char;
+      } else {
+        number += char;
+      }
+    }
+  
+    // Check if a number was actually found
+    if (number === '') {
+      return cn;  // Return the original C/N string if no number part was found
+    }
+  
+    const newNumber = parseInt(number) + 1;
+    return `${prefix}${newNumber}`;
+  }
+  
 
   onSaveClick() {
     if (this.form.invalid) {
@@ -1089,18 +1111,23 @@ this.input4.nativeElement.addEventListener('focusout', () => {
           // verticalPosition: 'top',
           panelClass: ['custom-snackbar']
         })
+        const currentCN = this.form.get('cnumber')?.value;
+        const newCN = this.incrementCN(currentCN);
         this.form.get('amount')!.disable();
         this.form.reset();
+        this.form.get('cnumber')?.setValue(newCN);
         this.form.get('date')?.setValue(dateValue);
         this.form.get('pc')?.setValue(1)
         this.form.get('rate')?.setValue(130)
-        this.form.get('weight')?.setValue(0.1)
+        this.form.get('weight')?.setValue(0.2)
         isError = false;
         
         //this.form.get('amount')?.setValue(100)
         const firstInputElement = this.elementRef.nativeElement.querySelector('input');
         if (firstInputElement) {
           this.renderer.selectRootElement(firstInputElement).focus();
+          this.renderer.selectRootElement(firstInputElement).select();
+
         }
       }
     

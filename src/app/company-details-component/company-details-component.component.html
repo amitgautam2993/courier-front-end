@@ -23,14 +23,14 @@
 <form [formGroup]="dateRange">
     <mat-form-field appearance="fill"  class="mat-form-field">
       <mat-label>From Date</mat-label>
-      <input matInput [matDatepicker]="picker1" formControlName="fromDate">
+      <input type="search" matInput [matDatepicker]="picker1" formControlName="fromDate">
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
   
     <mat-form-field appearance="fill" class="mat-form-field">
       <mat-label>To Date</mat-label>
-      <input matInput [matDatepicker]="picker2" formControlName="toDate">
+      <input type="search" matInput [matDatepicker]="picker2" formControlName="toDate">
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
@@ -41,7 +41,7 @@
   <button mat-raised-button (click)="refresh()" [disabled]="!dataFound">Refresh</button>
 <mat-form-field appearance="fill" style="margin-left: 10px;" class="mat-form-field">
     <mat-label>Search</mat-label>
-    <input matInput (input)="searchData()" [(ngModel)]="searchTerm" />
+    <input type="search" matInput (input)="searchData()" [(ngModel)]="searchTerm" />
   </mat-form-field>
 
 </div>

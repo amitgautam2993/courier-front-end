@@ -13,7 +13,7 @@
     <div class="row">
       <div class="col-md-6 form-group">
         <label for="cnumber">C/NO.</label>
-        <input #input1 type="text" class="form-control" id="cnumber" formControlName="cnumber" cdkFocusInitial (keydown)="addEventListeners()" [ngClass]="{'ng-invalid': form.controls['cnumber'].invalid && (form.controls['cnumber'].dirty || form.controls['cnumber'].touched)}">
+        <input #input1 type="text" class="form-control dark-input" id="cnumber" formControlName="cnumber" cdkFocusInitial (keydown)="addEventListeners()" [ngClass]="{'ng-invalid': form.controls['cnumber'].invalid && (form.controls['cnumber'].dirty || form.controls['cnumber'].touched)}">
         <!-- <mat-error *ngIf="form.controls['cnumber'].hasError('required') && (form.controls['cnumber'].dirty || form.controls['cnumber'].touched)">
           CNO is required.
         </mat-error> -->
@@ -85,7 +85,7 @@
 
     <div class="modal-content">
       <div class="modal-footer">
-        <button #input10 type="button" class="btn btn-primary"  (click)="onSaveClick()" [disabled]="form.invalid">Save</button>
+        <button #input10 type="button" class="btn btn-primary your-specific-button"  (click)="onSaveClick()" [disabled]="form.invalid">Save</button>
       </div>
     </div>
   </form>
