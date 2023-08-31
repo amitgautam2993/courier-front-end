@@ -266,10 +266,10 @@ generatePDF() {
         table: {
           headerRows: 1, 
           body: [
-            ['S.NO.', 'C/N NO.', 'DATE','DEST', 'TYPE', 'PC','RATE', 'WEIGHT', 'AMOUNT',],
-            ...this.dummyData.map((data,index) => [index + 1, data.cnumber, this.datePipe.transform(data.date, 'dd/MM/yyyy'),  data.destination,data.type,data.pc,data.rate+'/-',data.weight+'Kg',data.amount+'.00']),
+            ['S/N', 'C/N NO.', 'DATE','DEST', 'TYPE', 'PC','EWAY', 'WT.', 'AMT',],
+            ...this.dummyData.map((data,index) => [index + 1, data.cnumber, this.datePipe.transform(data.date, 'dd/MM/yyyy'),  data.destination,data.type,data.pc,data.ewaybill+'.00',data.weight+'Kg',data.amount+'.00']),
           ],
-          widths: ['auto', 90, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 50]
+          widths: ['6%', '16%', '17%', '8%', '9%', '4.5%', '18%', '9%', '15%'],
         },layout: 'lightHorizontalLines'
       },
       {canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595-2*40, y2: 5, lineWidth: 2 }]
@@ -279,6 +279,11 @@ generatePDF() {
 		            alignment:'right',
 		            margin:[0,3,2,3],
 		            bold:true
+},
+{			fontSize:10,text:['F.O.V. CHARGES 0.3% : ',{text:this.fovcharges},'.00'],
+alignment:'right',
+margin:[0,3,2,3],
+bold:true
 },
 		{canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595-2*40, y2: 5, lineWidth: 2 }]
 		    
@@ -294,14 +299,11 @@ generatePDF() {
 			
 ,			columns: [
 				{
-					text:['Ruppes GROSS TOTAL : ',{text: this.totalamountWords+' ONLY',bold:true,fontSize:10}]
-					
-					
-					
+					text:['Ruppes GROSS TOTAL : ',{text: this.totalbillWords+' ONLY',bold:true,fontSize:10}]
 				},
 				
 				{
-					text: ['BILLING AMOUNT : ',{text:this.totalamountNumber, bold:true},{text:'.00',bold:true}],
+					text: ['BILLING AMOUNT : ',{text:this.totalbill, bold:true},{text:'.00',bold:true}],
 					alignment:'right'
 					
 				}
@@ -356,12 +358,16 @@ generatePDF() {
   };
 
   // Generate the PDF and provide a download link
-  pdfMake.createPdf(documentDefinition).print();
+  //pdfMake.createPdf(documentDefinition).print();
+  pdfMake.createPdf(documentDefinition).download(`${this.cardData.company} `+`${this.monthYear}`);
 }
 
 totalpacket:any
 totalamountWords:any
 totalamountNumber:any
+fovcharges:any
+totalbill:any
+totalbillWords:any
 // totalpacketInt:number=0
 // totalamountWordsInt:number=0
 // totalamountNumberInt:number=0
@@ -374,8 +380,9 @@ getDisplayedIdSum() {
   upperString = numWords(this.filteredData.reduce((acc, curr) => acc + curr.amount, 0));
   this.totalamountWords=upperString.toUpperCase();
   this.totalamountNumber= this.filteredData.reduce((acc, curr) => acc + curr.amount, 0);
-
-
+  this.fovcharges = this.filteredData.reduce((acc, curr) => acc + Number(curr.ewaybill), 0) * 0.003;
+  this.totalbill=this.totalamountNumber+this.fovcharges
+  this.totalbillWords=numWords(this.totalbill).toUpperCase();
 }
 
 //onSearch function
@@ -665,7 +672,8 @@ export class editModalComapnyDetailComponent implements OnInit{
       rate: [this.data.rate],
       weight: [this.data.weight],
       amount: [this.data.amount],
-      couriercode:[this.data.couriercode]
+      couriercode:[this.data.couriercode],
+      ewaybill:[this.data.ewaybill]
     });
   }
 
@@ -684,7 +692,8 @@ export class editModalComapnyDetailComponent implements OnInit{
       rate: this.data.rate || '',
       weight: this.data.weight || '',
       amount: this.data.amount || '',
-      couriercode:this.data.couriercode||''
+      couriercode:this.data.couriercode||'',
+      ewaybill:this.data.ewaybill||''
     });
   }
   
@@ -710,7 +719,8 @@ export class editModalComapnyDetailComponent implements OnInit{
       "rate":updatedRecord.rate,
       "weight":updatedRecord.weight,
       "amount":updatedRecord.amount,
-      "couriercode":updatedRecord.couriercode
+      "couriercode":updatedRecord.couriercode,
+      "ewaybill":updatedRecord.ewaybill
     }
     const endpoint = `/courierdata/update/${this.updateId}`;
 
@@ -830,6 +840,7 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
   @ViewChild('input7') input7!: ElementRef<HTMLInputElement>;
   @ViewChild('input8') input8!: ElementRef<HTMLInputElement>;
   @ViewChild('input10') input10!: ElementRef<HTMLInputElement>;
+  @ViewChild('input11') input11!: ElementRef<HTMLInputElement>;
 
   ngAfterViewInit(): void {
 
@@ -959,14 +970,36 @@ this.input4.nativeElement.addEventListener('focusout', () => {
 
     this.input8.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
-
+        
         event.preventDefault();
         if (this.input8.nativeElement.value) {
-        this.input10.nativeElement.focus();
+        this.input11.nativeElement.focus();
+        this.input11.nativeElement.select();
+
       } // Optionally, you can blur the last input field
         // Perform any additional actions here
       }
     });
+
+    this.input11.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const inputValue = this.input11.nativeElement.value;
+        const pattern = /^\d+$/; // Regular expression to match only numbers
+      
+        if (this.input8.nativeElement.value  && pattern.test(inputValue)) {
+        this.input10.nativeElement.focus();
+      }
+      else {
+        // Handle error: display an error message, or set focus to another input, etc.
+       this.customSnackbarService.openSnackBar('Invalid input or missing value in Ewaybill', 'info');
+      } // Optionally, you can blur the last input field
+        // Perform any additional actions here
+      }
+      
+    });
+
+
     // this.input8.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
     //   if (event.key === 'Enter') {
 
@@ -1028,7 +1061,8 @@ this.input4.nativeElement.addEventListener('focusout', () => {
       weight: [0.1, [Validators.required, Validators.pattern(/^\d+(\.\d+)?$/)]],
       //amount: [100, Validators.required],
       amount: { value: '0', disabled: true },
-      couriercode:['', Validators.required]
+      couriercode:['', Validators.required],
+      ewaybill:[0.00, [Validators.required,Validators.pattern(/^[0-9]*$/)]]
  
     });
     this.calculateAmount();
@@ -1105,7 +1139,8 @@ this.input4.nativeElement.addEventListener('focusout', () => {
       "rate":updatedRecord.rate,
       "weight":updatedRecord.weight,
       "amount":updatedRecord.amount,
-      "couriercode":updatedRecord.couriercode
+      "couriercode":updatedRecord.couriercode,
+      "ewaybill":updatedRecord.ewaybill
     }
     //console.log(updatedRecord);
    // console.log(bodyData);
@@ -1133,7 +1168,8 @@ this.input4.nativeElement.addEventListener('focusout', () => {
         this.form.get('date')?.setValue(dateValue);
         this.form.get('pc')?.setValue(1)
         this.form.get('rate')?.setValue(130)
-        this.form.get('weight')?.setValue(0.2)
+        this.form.get('weight')?.setValue(0.1)
+        this.form.get('ewaybill')?.setValue(0.00)
         isError = false;
         
         //this.form.get('amount')?.setValue(100)

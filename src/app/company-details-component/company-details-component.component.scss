@@ -226,7 +226,10 @@ font-size: 22px;
   color: #ff0000;
   font-size: 22px;
   }
-
+  .col-md-2-5 {
+    flex: 0 0 20.83333% !important;
+    max-width: 20.83333% !important;
+  }
 
   // .redirect-overlay {
 	// position: fixed;
