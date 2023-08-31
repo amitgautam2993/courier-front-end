@@ -269,7 +269,7 @@ generatePDF() {
             ['S/N', 'C/N NO.', 'DATE','DEST', 'TYPE', 'PC','EWAY', 'WT.', 'AMT',],
             ...this.dummyData.map((data,index) => [index + 1, data.cnumber, this.datePipe.transform(data.date, 'dd/MM/yyyy'),  data.destination,data.type,data.pc,data.ewaybill+'.00',data.weight+'Kg',data.amount+'.00']),
           ],
-          widths: ['6%', '16%', '17%', '8%', '9%', '4.5%', '18%', '9%', '15%'],
+          widths: ['6%', '17%', '17%', '8%', '9%', '4.5%', '18%', '9%', '15%'],
         },layout: 'lightHorizontalLines'
       },
       {canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595-2*40, y2: 5, lineWidth: 2 }]
