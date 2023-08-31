@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, Validators,AbstractControl } from '@angular/forms';
+import { CustomSnackbarService } from '../custom-snackbar.service';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +15,8 @@ export class RegisterComponent {
   form: FormGroup;
 
 
-  constructor(private fb: FormBuilder,private http: HttpClient,private router: Router,public dialog: MatDialog,private _snackBar: MatSnackBar) 
+  constructor(    private customSnackbarService: CustomSnackbarService,
+    private fb: FormBuilder,private http: HttpClient,private router: Router,public dialog: MatDialog,private _snackBar: MatSnackBar) 
   {
     this.form = this.fb.group({
       organisation: ['', Validators.required],
@@ -68,16 +70,21 @@ export class RegisterComponent {
     {
      
         this.dialog.closeAll();
-        this._snackBar.open(resultData.message, 'Dismiss', {
-          duration: 3000
-        });
+
+        this.customSnackbarService.openSnackBar(resultData.message, 'success');
+
+        // this._snackBar.open(resultData.message, 'Dismiss', {
+        //   duration: 3000
+        // });
 
        // this.router.navigateByUrl("/home")
     },(error)=>{
     
-        this._snackBar.open(error.error.message, 'Dismiss', {
-          duration: 3000
-        });
+      this.customSnackbarService.openSnackBar(error.error.message, 'error');
+
+        // this._snackBar.open(error.error.message, 'Dismiss', {
+        //   duration: 3000
+        // });
      
     });
   }
@@ -86,9 +93,11 @@ export class RegisterComponent {
   {
     if (this.form.invalid ) 
     {
-      this._snackBar.open('Please fill in all the required fields', 'Dismiss', {
-        duration: 4000
-      });
+      this.customSnackbarService.openSnackBar('Please fill in all the required fields', 'info');
+
+      // this._snackBar.open('Please fill in all the required fields', 'Dismiss', {
+      //   duration: 4000
+      // });
     }
 else {
   //if(this.form.value.password==this.form.value.cpassword){

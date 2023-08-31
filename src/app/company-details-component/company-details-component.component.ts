@@ -15,6 +15,7 @@ import { removeUserDetails } from '../localStorageService';
 import { getUserDetails } from '../localStorageService';
 import * as moment from 'moment';
 import 'moment-timezone';
+import { CustomSnackbarService } from '../custom-snackbar.service';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -53,7 +54,7 @@ fromDate:any
 newInvoiceNumber: any;
 toDate: any;
 //constructor
-  constructor(private _snackBar: MatSnackBar,private http: HttpClient,public dialog: MatDialog,private route: ActivatedRoute,private router: Router,private formBuilder: FormBuilder,private authService: AuthService,private datePipe: DatePipe) {
+  constructor(private customSnackbarService: CustomSnackbarService,private _snackBar: MatSnackBar,private http: HttpClient,public dialog: MatDialog,private route: ActivatedRoute,private router: Router,private formBuilder: FormBuilder,private authService: AuthService,private datePipe: DatePipe) {
     this.searchTerm = '';
 
   }
@@ -136,22 +137,23 @@ const currentMonth = currentDate.getMonth() + 1;
            this.dummyData=[]
            this.dataFound=false; 
            this.filterData();
- 
-           this._snackBar.open(error.error.message, 'Dismiss',{
-             duration: 4000,
-         //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-         // verticalPosition: 'top',
-         panelClass: ['custom-snackbar']
-           });  
+           this.customSnackbarService.openSnackBar(error.error.message, 'error');
+
+        //    this._snackBar.open(error.error.message, 'Dismiss',{
+        //      duration: 4000,
+        //  //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        //  // verticalPosition: 'top',
+        //  panelClass: ['custom-snackbar']
+        //    });  
          }
          else {
            // Handle other error scenarios (status 500, 404, etc.)
            this.dataFound=false; 
- 
-           this._snackBar.open(error.error.message, 'Dismiss',{
-             duration: 4000,
+           this.customSnackbarService.openSnackBar(error.error.message, 'error');
+          //  this._snackBar.open(error.error.message, 'Dismiss',{
+          //    duration: 40000,
             
-           });  
+          //  });  
          }
          //console.log('Error Fetching data:')
        });
@@ -526,6 +528,7 @@ export class deleteModalComapnyDetailComponent  {
   deleteId:string=''
   cnumber:string=''
   constructor(
+    private customSnackbarService: CustomSnackbarService,
     @Inject(MAT_DIALOG_DATA) public data:any,
     private http: HttpClient,
     private _snackBar: MatSnackBar,
@@ -541,20 +544,23 @@ deleteById(){
 
   this.http.delete(endpoint).subscribe((response:any)=>{
     this.dialogRef.close();
-    this._snackBar.open(response.message,'Dismiss',{
-      duration: 4000,
-      //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-      // verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    })    
+    this.customSnackbarService.openSnackBar(response.message, 'success');
+
+    // this._snackBar.open(response.message,'Dismiss',{
+    //   duration: 4000,
+    //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+    //   // verticalPosition: 'top',
+    //   panelClass: ['custom-snackbar']
+    // })    
     
   },(error)=>{
-    this._snackBar.open(error.message,'Dismiss',{
-      duration: 4000,
-      //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-      // verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    })
+    this.customSnackbarService.openSnackBar(error.message, 'error');
+    // this._snackBar.open(error.message,'Dismiss',{
+    //   duration: 4000,
+    //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+    //   // verticalPosition: 'top',
+    //   panelClass: ['custom-snackbar']
+    // })
   })
 }
 
@@ -641,7 +647,8 @@ export class editModalComapnyDetailComponent implements OnInit{
   form: FormGroup;
   formattedDate: string = '';
   updateId:string=''
-  constructor(public dialogRef: MatDialogRef<editModalComapnyDetailComponent>,
+  constructor(private customSnackbarService: CustomSnackbarService,
+    public dialogRef: MatDialogRef<editModalComapnyDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _snackBar: MatSnackBar,
     private fb: FormBuilder, private datePipe: DatePipe,
@@ -711,12 +718,14 @@ export class editModalComapnyDetailComponent implements OnInit{
       //console.log(data)
       if(data.status==200){
         this.dialogRef.close(updatedRecord);
-        this._snackBar.open(data.message,'Dismiss',{
-          duration: 4000,
-          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-          // verticalPosition: 'top',
-          panelClass: ['custom-snackbar']
-        })
+        this.customSnackbarService.openSnackBar(data.message, 'success');
+
+        // this._snackBar.open(data.message,'Dismiss',{
+        //   duration: 4000,
+        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        //   // verticalPosition: 'top',
+        //   panelClass: ['custom-snackbar']
+        // })
         
         
         //this.form.get('amount')?.setValue(100)
@@ -725,23 +734,25 @@ export class editModalComapnyDetailComponent implements OnInit{
     
     },(err:any)=>{
      if(err.status==404){
-      
-        this._snackBar.open(err.error.message,'Dismiss',{
-          duration: 4000,
-          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-          // verticalPosition: 'top',
-          panelClass: ['custom-snackbar']
-        })
+      this.customSnackbarService.openSnackBar(err.error.message, 'error');
+
+        // this._snackBar.open(err.error.message,'Dismiss',{
+        //   duration: 4000,
+        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        //   // verticalPosition: 'top',
+        //   panelClass: ['custom-snackbar']
+        // })
       }
       else{
+        this.customSnackbarService.openSnackBar(err.error.messag, 'error');
+
       
-      
-        this._snackBar.open(err.error.message,'Dismiss',{
-          duration: 4000,
-          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-          // verticalPosition: 'top',
-          panelClass: ['custom-snackbar']
-        })
+        // this._snackBar.open(err.error.message,'Dismiss',{
+        //   duration: 4000,
+        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        //   // verticalPosition: 'top',
+        //   panelClass: ['custom-snackbar']
+        // })
       }
     })
 
@@ -993,6 +1004,7 @@ this.input4.nativeElement.addEventListener('focusout', () => {
 
   form: FormGroup;
   constructor(
+    private customSnackbarService: CustomSnackbarService,
     private _snackBar: MatSnackBar,
     private http: HttpClient,
     private formBuilder: FormBuilder,
@@ -1105,12 +1117,14 @@ this.input4.nativeElement.addEventListener('focusout', () => {
     this.http.post(endpoint,bodyData).subscribe((data:any)=>{
       //console.log(data)
       if(data.status==200){
-        this._snackBar.open(data.message,'Dismiss',{
-          duration: 4000,
-          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-          // verticalPosition: 'top',
-          panelClass: ['custom-snackbar']
-        })
+        this.customSnackbarService.openSnackBar(data.message, 'success');
+
+        // this._snackBar.open(data.message,'Dismiss',{
+        //   duration: 4000,
+        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        //   // verticalPosition: 'top',
+        //   panelClass: ['custom-snackbar']
+        // })
         const currentCN = this.form.get('cnumber')?.value;
         const newCN = this.incrementCN(currentCN);
         this.form.get('amount')!.disable();
@@ -1140,22 +1154,24 @@ this.input4.nativeElement.addEventListener('focusout', () => {
         this.renderer.selectRootElement(firstInputElement).select();
       }
       isError = true;
-        this._snackBar.open(err.error.message,'Dismiss',{
-          duration: 4000,
-          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-          // verticalPosition: 'top',
-          panelClass: ['custom-snackbar']
-        })
+      this.customSnackbarService.openSnackBar(err.error.message, 'error');
+        // this._snackBar.open(err.error.message,'Dismiss',{
+        //   duration: 400000,
+        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        //   // verticalPosition: 'top',
+        //   panelClass: ['custom-snackbar']
+        // })
       }
       else{
+        this.customSnackbarService.openSnackBar(err.error.message, 'error');
+
       
-      
-        this._snackBar.open(err.error.message,'Dismiss',{
-          duration: 4000,
-          //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-          // verticalPosition: 'top',
-          panelClass: ['custom-snackbar']
-        })
+        // this._snackBar.open(err.error.message,'Dismiss',{
+        //   duration: 4000,
+        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        //   // verticalPosition: 'top',
+        //   panelClass: ['custom-snackbar']
+        // })
       }
     })
     if (!isError) {

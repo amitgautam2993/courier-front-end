@@ -209,11 +209,15 @@ label {
   background-size: 50px;
   background-position: center;
 }
-.custom-snackbar {
-  font-size: 16px !important;
-  background-color: #ff0000 !important; /* Set the desired background color */
-  color: #ffffff !important; /* Set the desired text color */
-}
+// .custom-snackbar {
+//   font-size: 16px !important;
+//   background-color: green !important; /* Set the desired background color */
+//   color: red !important; /* Set the desired text color */
+// }
+
+// ::ng-deep .mat-mdc-snack-bar-container {
+//   --mdc-snackbar-container-color: red !important;
+// }
 .edit-icon:hover{
 color: #ff0000;
 font-size: 22px;
