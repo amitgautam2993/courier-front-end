@@ -20,6 +20,7 @@ import {MatInputModule} from '@angular/material/input';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import {MatTooltipModule,TooltipPosition} from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -79,6 +80,8 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     FlexLayoutModule,
     MatRippleModule,
     MatIconModule,
+    MatTooltipModule,
+    MatTooltipModule,
     MatDialogModule,
     MatFormFieldModule,
     ReactiveFormsModule,

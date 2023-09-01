@@ -53,6 +53,7 @@ date:any
 fromDate:any
 newInvoiceNumber: any;
 toDate: any;
+invoiceMonthYear:string=''
 // demodateRange: any;
 // selectedMonth: string | undefined;
 // nonClickable=true
@@ -94,7 +95,7 @@ const currentMonth = currentDate.getMonth() + 1;
     //   this.filterData();
     // });
     this.dateRange.valueChanges.subscribe(value => {
-    console.log('Selected date range: ', value.fromDate.toLocaleDateString(), ' to ', value.toDate.toLocaleDateString());
+    //console.log('Selected date range: ', value.fromDate.toLocaleDateString(), ' to ', value.toDate.toLocaleDateString());
       //console.log(value.fromDate.toISOString())
       // Make an API call with the selected dates
 
@@ -107,10 +108,10 @@ const currentMonth = currentDate.getMonth() + 1;
       this.month = fromDateT.format('MMM'); // Get the month as a character
       this.monthNumber  = fromDateT.format('MM');// get the month as a number
       this.monthYear=`${this.month} ${this.year}`
-      //console.log(this.monthYear)
       this.toDate =toDateT.toISOString();
       this.fetchCourierData()
-      
+     
+
      
       // Construct the API endpoint with query parameters
     
@@ -159,6 +160,13 @@ const currentMonth = currentDate.getMonth() + 1;
 
 //Rough code
 
+ formatDateToMonYYYY(dateString: string | number | Date) {
+  const date = new Date(dateString);
+  const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+  return `${month} ${year}`;
+}
   fetchCourierData(){
     // if(this.fromDate=='' && this.toDate==''){
       if(this.toDate.length>0)
@@ -171,31 +179,22 @@ const currentMonth = currentDate.getMonth() + 1;
        this.dataFound=true; 
        this.dummyData= data.data.courierDetails
        this.filterData();
+       this.invoiceMonthYear=this.formatDateToMonYYYY(this.dummyData[0].date)
        },(error:any)=>{
-         if(error.status==404){
-           this.dummyData=[]
-           this.dataFound=false; 
-           this.filterData();
-           this.customSnackbarService.openSnackBar(error.error.message, 'error');
-
-        //    this._snackBar.open(error.error.message, 'Dismiss',{
-        //      duration: 4000,
-        //  //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-        //  // verticalPosition: 'top',
-        //  panelClass: ['custom-snackbar']
-        //    });  
-         }
-         else {
-           // Handle other error scenarios (status 500, 404, etc.)
-           this.dataFound=false; 
-           this.customSnackbarService.openSnackBar(error.error.message, 'error');
-          //  this._snackBar.open(error.error.message, 'Dismiss',{
-          //    duration: 40000,
-            
-          //  });  
-         }
-         //console.log('Error Fetching data:')
-       });
+        if(error.status==404){
+          this.dummyData=[]
+          this.dataFound=false; 
+          this.filterData();
+          this.customSnackbarService.openSnackBar(error.error.message, 'error');
+        }
+        else {
+          // Handle other error scenarios (status 500, 404, etc.)
+          this.dataFound=false; 
+          this.customSnackbarService.openSnackBar(error.error.message, 'error');
+        }
+        //console.log('Error Fetching data:')
+   }
+   );
       }
       else {
         this.dataFound=true;
@@ -255,7 +254,7 @@ generatePDF() {
   const documentDefinition: TDocumentDefinitions = {
     content: [
       {
-        text: `${this.monthYear}`,
+        text: `${this.invoiceMonthYear}`,
         style: 'subheader',
         alignment: 'center',
       },
@@ -398,7 +397,7 @@ bold:true
 
   // Generate the PDF and provide a download link
   //pdfMake.createPdf(documentDefinition).print();
-  pdfMake.createPdf(documentDefinition).download(`${this.cardData.company} `+`${this.monthYear}`);
+  pdfMake.createPdf(documentDefinition).download(`${this.cardData.company} `+`${this.invoiceMonthYear}`);
 }
 
 totalpacket:any
@@ -587,7 +586,7 @@ export class deleteModalComapnyDetailComponent  {
   }
 
 deleteById(){
-  console.log(this.deleteId)
+  //console.log(this.deleteId)
   const endpoint = `/courierdata/delete/${this.deleteId}`;
 
   this.http.delete(endpoint).subscribe((response:any)=>{
@@ -720,7 +719,7 @@ export class editModalComapnyDetailComponent implements OnInit{
 
   
   ngOnInit(): void {
-    console.log(this.data)
+    //console.log(this.data)
     this.formattedDate = this.datePipe.transform(this.data.date, 'dd/MM/yyyy') || '';
 
     this.form.patchValue({

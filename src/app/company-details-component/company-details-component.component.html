@@ -94,8 +94,8 @@
           <td style="text-align: left;">
             {{ record.amount }}.00
             <ng-template #editButton>
-              <mat-icon class="mat-icon-small edit-icon" (click)="editModal(record)">edit</mat-icon>
-              <mat-icon class="mat-icon-small delete-icon" (click)="deleteModal(record)">delete</mat-icon>
+              <mat-icon class="mat-icon-large edit-icon" (click)="editModal(record)" matTooltip="Edit" matTooltipPosition="above">edit</mat-icon>
+              <mat-icon class="mat-icon-large delete-icon" (click)="deleteModal(record)" matTooltip="Delete" matTooltipPosition="above">delete</mat-icon>
             </ng-template>
             <ng-container *ngIf="selectedRow === record">
               <ng-container *ngTemplateOutlet="editButton"></ng-container>
