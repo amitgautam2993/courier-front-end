@@ -53,14 +53,21 @@ date:any
 fromDate:any
 newInvoiceNumber: any;
 toDate: any;
+// demodateRange: any;
+// selectedMonth: string | undefined;
+// nonClickable=true
 //constructor
   constructor(private customSnackbarService: CustomSnackbarService,private _snackBar: MatSnackBar,private http: HttpClient,public dialog: MatDialog,private route: ActivatedRoute,private router: Router,private formBuilder: FormBuilder,private authService: AuthService,private datePipe: DatePipe) {
     this.searchTerm = '';
 
   }
+  
+
+  
 
 //ngOnInitpd
   ngOnInit() {
+    
     // this.header=getUserDetails().fname
     this.header=`${getUserDetails().firstname.toUpperCase()} ${getUserDetails().lastname.toUpperCase()}`
     
@@ -103,7 +110,7 @@ const currentMonth = currentDate.getMonth() + 1;
       //console.log(this.monthYear)
       this.toDate =toDateT.toISOString();
       this.fetchCourierData()
-    
+      
      
       // Construct the API endpoint with query parameters
     
@@ -119,6 +126,38 @@ const currentMonth = currentDate.getMonth() + 1;
     this.filterData();
     //this.newInvoiceNumber = this.generateInvoiceNumber();
   }
+  //Rough code
+
+  // daterangeMonth() {
+  //   if (this.selectedMonth) {
+  //     const [year, month] = this.selectedMonth.split('-').map(Number);
+  //     this.fromDate = this.getStartDateISO(year, month);
+  //     this.toDate = this.getEndDateISO(year, month);
+  //     this.fetchCourierData();
+  //     //console.log("Start Date:", startDate);
+  //     //console.log("End Date:", endDate);
+  //   }
+    
+  // }
+  // getStartDateISO(year: number, month: number): string {
+  //   const firstDay = new Date(Date.UTC(year, month - 1, 1, 18, 30, 0, 0));
+  //   return firstDay.toISOString();
+  // }
+
+
+  // getEndDateISO(year: number, month: number): string {
+  //   const firstDayNextMonth = new Date(Date.UTC(year, month, 1, 18, 30, 0, 0));
+  //   const lastDay = new Date(firstDayNextMonth.getTime() - 1);
+  //   return lastDay.toISOString();
+  // }
+  
+
+  // Example usage:
+  
+ // Output will be "2023-09-01T18:30:00.000Z&to=2023-09-30T18:29:59.999Z"
+  
+
+//Rough code
 
   fetchCourierData(){
     // if(this.fromDate=='' && this.toDate==''){
@@ -380,8 +419,10 @@ getDisplayedIdSum() {
   upperString = numWords(this.filteredData.reduce((acc, curr) => acc + curr.amount, 0));
   this.totalamountWords=upperString.toUpperCase();
   this.totalamountNumber= this.filteredData.reduce((acc, curr) => acc + curr.amount, 0);
-  this.fovcharges = this.filteredData.reduce((acc, curr) => acc + Number(curr.ewaybill), 0) * 0.003;
-  this.totalbill=this.totalamountNumber+this.fovcharges
+  // this.fovcharges = this.filteredData.reduce((acc, curr) => acc + Number(curr.ewaybill), 0) * 0.003;
+  const sum = this.filteredData.reduce((acc, curr) => acc + Number(curr.ewaybill || 0), 0); // 0 is the default value
+  this.fovcharges = Math.round(sum * 0.003);
+    this.totalbill=this.totalamountNumber+this.fovcharges
   this.totalbillWords=numWords(this.totalbill).toUpperCase();
 }
 
@@ -689,11 +730,11 @@ export class editModalComapnyDetailComponent implements OnInit{
       destination: this.data.destination || '',
       type: this.data.type || '',
       pc: this.data.pc || '',
-      rate: this.data.rate || '',
-      weight: this.data.weight || '',
-      amount: this.data.amount || '',
+      rate: this.data.rate ,
+      weight: this.data.weight ,
+      amount: this.data.amount ,
       couriercode:this.data.couriercode||'',
-      ewaybill:this.data.ewaybill||''
+      ewaybill: (this.data.ewaybill !== undefined && this.data.ewaybill !== null) ? this.data.ewaybill : '',
     });
   }
   

@@ -21,14 +21,17 @@
 </mat-toolbar>
 <div class="search-container">
 <form [formGroup]="dateRange">
-    <mat-form-field appearance="fill"  class="mat-form-field">
+  <mat-form-field appearance="fill"  class="mat-form-field">
+
+    <!-- <mat-form-field appearance="fill"  class="mat-form-field" style="width: 150px;"> -->
       <mat-label>From Date</mat-label>
       <input type="search" matInput [matDatepicker]="picker1" formControlName="fromDate">
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
-  
     <mat-form-field appearance="fill" class="mat-form-field">
+
+    <!-- <mat-form-field appearance="fill" class="mat-form-field" style="width: 150px;"> -->
       <mat-label>To Date</mat-label>
       <input type="search" matInput [matDatepicker]="picker2" formControlName="toDate">
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
@@ -36,6 +39,8 @@
     </mat-form-field>
   </form>
   <!-- ... existing code ... -->
+  <!-- <input type="month" name="month" [(ngModel)]="selectedMonth" (change)="daterangeMonth()" >
+  <button mat-raised-button (click)="createModal()">Create</button> -->
   <button mat-raised-button (click)="createModal()">Create</button>
   <button mat-raised-button (click)="generatePDF()" [disabled]="!dataFound">Export PDF</button>
   <button mat-raised-button (click)="refresh()" [disabled]="!dataFound">Refresh</button>
@@ -73,7 +78,11 @@
       <ng-container *ngFor="let record of filteredData; let i = index">
         <tr style="cursor: pointer;" (mouseenter)="onRowHover(record, true)" (mouseleave)="onRowHover(record, false)">
             <td>{{ i+1 }}</td> 
-            <td class="link" (click)="trackModal(record)">{{ record.cnumber }}</td>
+            <td>
+              <span class="link" (click)="trackModal(record)">{{ record.cnumber }}</span>
+              <span style="text-transform: uppercase;"> - {{record.couriercode}}</span>
+            </td>
+            <!-- <td class="link" (click)="trackModal(record)">{{ record.cnumber }} - {{ record.couriercode }}</td> -->
           <td>{{ record.date | date: 'mediumDate' }}</td>
          
           <td>{{ record.destination }}</td>
