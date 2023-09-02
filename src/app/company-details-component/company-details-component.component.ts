@@ -1115,15 +1115,21 @@ this.input4.nativeElement.addEventListener('focusout', () => {
   calculateAmount(): void {
     const pc = this.form.get('pc')!.value;
     const rate = this.form.get('rate')!.value;
-    const kg = this.form.get('weight')!.value;
+    //const kg = this.form.get('weight')!.value;
+    const kg = this.convertWeight(this.form.get('weight')!.value);
     //const gm = this.form.get('amount')!.value;
   
     // Perform the calculation
+
+
     const amount = pc * ((kg * 1000) / 1000) * rate;
   
     this.form.get('amount')!.setValue(amount);
   }
   
+  convertWeight(inputWeight: number): number {
+    return Math.ceil(inputWeight);
+  }
 
   onCancelClick() {
     this.dialogRef.close();
