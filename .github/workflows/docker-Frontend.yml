@@ -33,11 +33,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true  # Opt out of Node.js version enforcement
     steps:
-      - name: Use Node.js 16.x
+      - name: Use Node.js 12.x
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: 12.x
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -60,4 +62,5 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: docker push amitgautam67/track4u_frontend:${{ steps.determine_tag.outputs.tag }}
+
 
