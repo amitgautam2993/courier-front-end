@@ -34,6 +34,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -55,3 +60,4 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: docker push amitgautam67/track4u_frontend:${{ steps.determine_tag.outputs.tag }}
+
