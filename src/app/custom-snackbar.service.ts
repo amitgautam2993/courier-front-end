@@ -40,18 +40,42 @@ export class CustomSnackbarService {
 
   constructor(private _snackBar: MatSnackBar) {}
 
-  openSnackBar(message: string, messageType: 'error' | 'success' | 'info') {
+  // openSnackBar(message: string, messageType: 'error' | 'success' | 'info',actionLabel?: string, action?: () => void) {
+  //   if (this.snackBarRef) {
+  //     this.snackBarRef.dismiss();
+  //   }
+
+  //   this.snackBarRef = this._snackBar.open(message, 'Dismiss', {
+  //     duration: 4000,
+  //     panelClass: [`custom-snackbar-${messageType}`]
+  //   });
+  //   if (action) {
+  //     this.snackBarRef.onAction().subscribe(action);
+  //   }
+  //   this.snackBarRef.afterDismissed().subscribe(() => {
+  //     this.snackBarRef = null;
+  //   });
+  // }
+  openSnackBar(message: string, messageType: 'error' | 'success' | 'info', action?: string, callback?: () => void) {
     if (this.snackBarRef) {
       this.snackBarRef.dismiss();
     }
-
-    this.snackBarRef = this._snackBar.open(message, 'Dismiss', {
+  
+    this.snackBarRef = this._snackBar.open(message, action || 'Dismiss', {
       duration: 4000,
       panelClass: [`custom-snackbar-${messageType}`]
     });
-
+  
+    if (action && callback) {
+      this.snackBarRef.onAction().subscribe(() => {
+        callback();
+      });
+    }
+  
     this.snackBarRef.afterDismissed().subscribe(() => {
       this.snackBarRef = null;
     });
   }
+  
+  
 }

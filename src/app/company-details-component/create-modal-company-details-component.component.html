@@ -1,8 +1,8 @@
 <div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
   <mat-toolbar color="primary">
-    <h4 class="modal-title">Create Record</h4>
+    <h4 class="modal-title">Create Courier Details : {{shippercode}}</h4>
     <span class="spacer"></span>
-    <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" (click)="onCancelClick()">
+    <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" >
       <span aria-hidden="true">&times;</span>
     </button>
   </mat-toolbar>
@@ -30,7 +30,70 @@
     </div>
 
     <div class="row">
-      <div class="col-md-3 form-group">
+
+      <div class="col-md-5 form-group" >
+        <label for="destination">DESTINATION</label>
+        <div class="input-icon-container">
+          <input 
+            #input3 
+            type="text" 
+            class="form-control larger-autocomplete" 
+            id="destination" 
+            formControlName="destination" 
+            (keydown)="addEventListeners()" 
+            [matAutocomplete]="destinationAuto" matTooltip={{toolTipCity}}
+            >
+            
+          <!-- The commented-out search icon can be uncommented if needed -->
+          <!--
+          <span class="icon-search" style="cursor: pointer;" (click)="addCodes()">
+            <mat-icon>search</mat-icon>
+          </span>
+          -->
+      
+          <mat-autocomplete 
+            autoActiveFirstOption 
+            #destinationAuto="matAutocomplete" 
+            class="custom-autocomplete"
+            (optionSelected)="setSelectedOption($event)" 
+            >
+            
+            <!-- Use mat-option to display available destinations -->
+            <mat-option 
+              *ngFor="let destination of availableDestinations" 
+              [value]="destination" 
+              >
+              <span style="font-weight: bold;">{{ destination.name }}</span>
+              <!-- Style destination.code -->
+              <span style="color: #007bff;"> ({{ destination.code }})</span>
+              <!-- Place destination.state on a new line using a div -->
+              <div style="white-space: nowrap; font-style: italic;">
+                {{ destination.state }}
+              </div>
+              
+              <!-- {{ destination.name }} ({{ destination.code }}) - {{destination.state}} -->
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+<!-- 
+      <div class="col-md-6 form-group">
+        <label for="destination">DESTINATION</label>
+        <div class="input-icon-container">
+          <input #input3 type="text" class="form-control larger-autocomplete" id="destination" formControlName="destination" (keydown)="addEventListeners()" [matAutocomplete]="destinationAuto"  >
+          <span class="icon-search" style="cursor: pointer;" (click)="addCodes()">
+            <mat-icon>search</mat-icon>
+          </span>
+          <mat-autocomplete  autoActiveFirstOption #destinationAuto="matAutocomplete" class="custom-autocomplete">
+            <mat-option *ngFor="let destination of availableDestinations" [value]="destination">
+              {{ destination }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+      </div> -->
+      
+
+      <!-- <div class="col-md-3 form-group">
         <label for="destination">DESTINATION</label>
         <input #input3 type="text" class="form-control" id="destination" formControlName="destination" (keydown)="addEventListeners()" [matAutocomplete]="destinationAuto" (input)="filterDestinations($event)">
         <mat-autocomplete autoActiveFirstOption #destinationAuto="matAutocomplete" class="custom-autocomplete">
@@ -38,24 +101,24 @@
             {{ destination }}
           </mat-option>
         </mat-autocomplete>
-      </div>
+      </div> -->
 
       <div class="col-md-3 form-group">
-        <label for="type">TYPE</label>
-        <input #input4 type="text" class="form-control" id="type" (keydown)="addEventListeners()" formControlName="type" (input)="filterType($event)" [matAutocomplete]="typeAuto">
-        <mat-autocomplete autoActiveFirstOption #typeAuto="matAutocomplete" class="custom-autocomplete">
-          <mat-option *ngFor="let type of availableType" [value]="type">
-            {{ type }}
+        <label for="couriercode">Courier Code</label>
+        <input #input4 type="text" class="form-control" id="couriercode" (keydown)="addEventListeners()" formControlName="couriercode" (input)="filterCourierCode($event)" [matAutocomplete]="courierCodeAuto">
+        <mat-autocomplete autoActiveFirstOption #courierCodeAuto="matAutocomplete" class="custom-autocomplete">
+          <mat-option *ngFor="let couriercode of availableCourierCode" [value]="couriercode">
+            {{ couriercode }}
           </mat-option>
         </mat-autocomplete>
       </div>
 
-      <div class="col-md-3 form-group">
+      <div class="col-md-2 form-group">
         <label for="rate">RATE</label>
         <input #input5 type="text" class="form-control" id="rate" (keydown)="addEventListeners()" formControlName="rate">
       </div>
 
-      <div class="col-md-3 form-group">
+      <div class="col-md-2 form-group">
         <label for="pc">PC</label>
         <input #input6 type="text" class="form-control" id="pc" (keydown)="addEventListeners()" formControlName="pc">
       </div>
@@ -70,14 +133,16 @@
       </div>
 
       <div class="col-md-3 form-group">
-        <label for="couriercode">Courier Code</label>
-        <input #input8 type="text" class="form-control" id="couriercode" (keydown)="addEventListeners()" formControlName="couriercode" (input)="filterCourierCode($event)" [matAutocomplete]="courierCodeAuto">
-        <mat-autocomplete autoActiveFirstOption #courierCodeAuto="matAutocomplete" class="custom-autocomplete">
-          <mat-option *ngFor="let couriercode of availableCourierCode" [value]="couriercode">
-            {{ couriercode }}
+        <label for="type">TYPE</label>
+        <input #input8 type="text" class="form-control" id="type" (keydown)="addEventListeners()" formControlName="type" (input)="filterType($event)" [matAutocomplete]="typeAuto">
+        <mat-autocomplete autoActiveFirstOption #typeAuto="matAutocomplete" class="custom-autocomplete">
+          <mat-option *ngFor="let type of availableType" [value]="type">
+            {{ type }}
           </mat-option>
         </mat-autocomplete>
       </div>
+
+     
 
       
 

@@ -1,0 +1,32 @@
+<div class="redirect-overlay">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 pt-3">
+          <h2 class="text-center">Add Codes</h2>
+        </div>
+    </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <!-- Material Autocomplete -->
+          <input type="text" placeholder="Search code" aria-label="Search" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+          <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete" (optionSelected)="setSelectedOption($event)" class="larger-autocomplete">
+            <mat-option *ngFor="let option of filteredOptions" [value]="option">
+              {{option.name}} ({{option.code}})-{{option.state}}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+         
+       
+        <div class="col-md-2 form-group pt-1">
+          <button mat-raised-button color="primary" mat-dialog-close (click)="addCodes()">Add</button>
+        </div>
+        <div class="col-md-1 form-group ps-4 pt-1">
+          <button mat-raised-button color="primary" mat-dialog-close>Cancel</button>
+        </div>
+        <div class="col-md-12" *ngIf="this.selectedCode.length > 0"> <p style="font-weight: bold;" >
+          {{selectedName}} : {{selectedCode}}- {{selectedOption.state}}
+         </p></div>
+      </div>
+    </div>
+  </div>
+  

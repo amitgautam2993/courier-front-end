@@ -1,0 +1,74 @@
+/* notification.component.css */
+
+/* Styling for the notification button */
+.notification-button {
+    font-size: 24px; /* Increase the button icon size */
+    color: #333; /* Text color */
+    background-color: #fff; /* Background color */
+    border: none; /* Remove button border */
+    border-radius: 50%; /* Make it a circular button */
+    padding: 10px; /* Adjust padding to control button size */
+    cursor: pointer;
+  }
+  
+  .notification-button:hover {
+    background-color: #f0f0f0; /* Background color on hover */
+  }
+  
+  /* Styling for the notification count badge */
+  /* Styling for the notification count badge */
+.notification-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff5722; /* Badge background color */
+    color: #fff; /* Text color */
+    border-radius: 50%; /* Make it a circular badge */
+    padding: 4px 8px; /* Reduce padding to make it smaller */
+    font-size: 12px; /* Reduce font size to make the count text smaller */
+  }
+  
+  
+  /* Styling for the notification list */
+  .notification-list {
+    max-height: 300px; /* Set a maximum height for the list */
+    overflow-y: auto; /* Add a scrollbar for overflow */
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Styling for each notification item */
+  .notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Separator between notifications */
+    cursor: pointer;
+  }
+  
+  .notification-item:last-child {
+    border-bottom: none; /* Remove separator for the last item */
+  }
+  
+  .notification-item:hover {
+    background-color: #f0f0f0; /* Background color on hover */
+  }
+  
+  /* Styling for the empty notification message */
+  .empty-notification {
+    padding: 10px;
+    text-align: center;
+    color: #666;
+  }
+  /* Styling for read notifications */
+.read {
+    background-color: #f0f0f0; /* Background color for read notifications */
+    color: #666; /* Text color for read notifications */
+  }
+  
+  /* Styling for unread notifications */
+  .unread {
+    background-color: #fff; /* Background color for unread notifications */
+    color: #333; /* Text color for unread notifications */
+    font-weight: bold; /* Make unread notifications bold */
+  }
+  
+  

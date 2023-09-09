@@ -1,0 +1,34 @@
+/* Styling for the search input field */
+
+
+  /* Styling for the search button */
+.search-button {
+    // background-color: transparent; /* Use a transparent background */
+    border: none;
+    border-radius: 18px;
+    border-color: red;
+    //border-radius: 50%; /* Make it a circular button */
+    color: black; /* Text color */
+    font-size: 18px; /* Increase the font size */
+    width: 480px; /* Increase the button size */
+    height: 38px; /* Increase the button size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s; /* Add a smooth hover effect */
+    cursor: text; /* Add pointer cursor on hover */
+    padding-left: 10px;
+
+  }
+
+  ::placeholder {
+    color: black;
+  }
+  
+  ::ng-deep .cdk-overlay-pane:not(.mat-mdc-autocomplete-panel-above) .mdc-menu-surface.mat-mdc-autocomplete-panel{
+    border-radius: 24px !important;
+  }
+ 
+ 
+  
+  

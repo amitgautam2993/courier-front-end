@@ -8,7 +8,7 @@ import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule,NoopAnimationsModule } from '@angular/platform-browser/animations'
 import { MatButtonModule } from '@angular/material/button';
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { AuthService } from './auth.service';
@@ -41,10 +41,13 @@ import { DatePipe } from '@angular/common';
 import { AutofocusDirective } from './directives/autofocus/autofocus.directive';
 import { deleteModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
 import{ApiPrefixInterceptor} from './api-prefix.interceptor'
-
-
+import { codeModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
+import {MatListModule} from '@angular/material/list';
 import { CompanyDetailsComponentComponent } from './company-details-component/company-details-component.component';
-
+import { MatToolbarComponent } from './mat-toolbar/mat-toolbar.component';
+import { DropdownMenuComponent } from './dropdown-menu/dropdown-menu.component';
+import {MatMenuModule} from '@angular/material/menu';
+import { NotificationMenuComponent } from './notification-menu/notification-menu.component';
 
 
 
@@ -64,7 +67,11 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     createModalComapnyDetailComponent,
     trackingModalComapnyDetailComponent,
     deleteModalComapnyDetailComponent,
-    AutofocusDirective
+    AutofocusDirective,
+    codeModalComapnyDetailComponent,
+    MatToolbarComponent,
+    DropdownMenuComponent,
+    NotificationMenuComponent
   ],
   imports: [
     BrowserModule,
@@ -91,9 +98,11 @@ import { CompanyDetailsComponentComponent } from './company-details-component/co
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,
-    
+    MatMenuModule,
     MatAutocompleteModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatListModule,
+    NoopAnimationsModule
 
   ],
   providers: [AuthService,AuthGuard,DatePipe,{provide:HTTP_INTERCEPTORS, useClass:ApiPrefixInterceptor,multi:true}],

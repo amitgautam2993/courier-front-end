@@ -1,0 +1,34 @@
+<mat-toolbar color="primary">
+  <span>
+    <button mat-raised-button (click)="backtodashboard()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </span>
+
+  <span style="flex: 1; display: flex; justify-content: center;">
+    <h1 *ngIf="!isSearchActive">{{ header }}</h1>
+    <input
+      #searchInput
+      [appAutofocus]="isSearchActive"
+      *ngIf="isSearchActive"
+      [matAutocomplete]="auto"
+      placeholder="Search here..."
+      class="search-button"
+      (input)="handleInputChanges(searchInput.value)"
+     
+    />
+    <mat-autocomplete style="border-radius: 20px;"  #auto="matAutocomplete"  (optionSelected)="onOptionSelected($event.option.value)" >
+      <mat-option  *ngFor="let option of deepSearchResult"  [value]="option">
+       <span style="font-weight: bold;">{{ option.courierDetails.cnumber }} ({{ option.courierDetails.destination }}, {{ option.courierDetails.couriercode }}, {{ option.courierDetails.weight }}KG,{{ option.courierDetails.rate }}, {{ formatDate(option.courierDetails.date) }},{{ option.courierDetails.weight }}  )</span> 
+       <div style="color:blue; white-space: nowrap; font-style: italic;">{{ option.id }}</div>
+      </mat-option>
+    </mat-autocomplete>
+  </span>
+
+  <button mat-icon-button (click)="toggleSearch()">
+    <mat-icon>{{ isSearchActive ? 'close' : 'search' }}</mat-icon>
+  </button>
+
+  <app-notification-menu></app-notification-menu>
+  <app-dropdown-menu></app-dropdown-menu>
+</mat-toolbar>
