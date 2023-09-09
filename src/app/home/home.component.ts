@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { RegisterComponent } from '../register/register.component';
 import { LoginComponent } from '../login/login.component';
 
@@ -37,7 +37,6 @@ login() {
     }
   })
   this.dialog.closeAll
-  //this.router.navigateByUrl("/login")
 
 }
 

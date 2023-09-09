@@ -1,10 +1,4 @@
-<mat-toolbar color="primary">
-  <span ><button mat-raised-button (click)="backtodashboard()"  disabled="true">Back</button> </span>
-  <span style="flex: 1; display: flex; justify-content: center;">
-    <h1>{{header}}</h1>
-</span>
-    <span ><button mat-raised-button color="accent"(click)="logout()">logout</button></span>
-</mat-toolbar>
+<app-mat-toolbar></app-mat-toolbar>
 <div style="margin: 20px
 ; display: flex;justify-content:end;">
 <button style="margin: 8px 8px 8px 0;" mat-raised-button color="primary" (click)="openAddCardDialog()">Add</button>

@@ -1,0 +1,17 @@
+<button mat-icon-button [matMenuTriggerFor]="notificationMenu">
+    <mat-icon>notifications</mat-icon>
+    <span class="notification-count">{{ notifications.length }}</span>
+  </button>
+  <mat-menu #notificationMenu="matMenu">
+    <ng-container *ngIf="notifications.length; else noNotifications">
+        <mat-list>
+            <mat-list-item *ngFor="let notification of notifications" [class.read]="notification.isRead" (click)="handleNotificationClick(notification)">
+              {{ notification.message }} ({{ notification.timestamp | date: 'short' }})
+            </mat-list-item>
+          </mat-list>
+    </ng-container>
+    <ng-template #noNotifications>
+      <p class="empty-notification">No notifications</p>
+    </ng-template>
+  </mat-menu>
+  

@@ -1,0 +1,19 @@
+<!-- dropdown-menu.component.html -->
+<button mat-button [matMenuTriggerFor]="menu" class="large-button custom-button">
+  <mat-icon aria-hidden="false"
+  aria-label="account circle"
+  fontIcon="account_circle"
+  class="custom-icon">account_circle</mat-icon>
+
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="goToProfile()">
+    <mat-icon>settings</mat-icon>
+    <span>Settings</span>
+  </button>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
+</mat-menu>
+

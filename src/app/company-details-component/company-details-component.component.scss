@@ -62,6 +62,22 @@
   margin-top: 10px;
 }
 
+.input-icon-container {
+  position: relative;
+}
+
+.icon-search {
+  position: absolute;
+  right: 5px;
+  top: 60%;
+  transform: translateY(-50%);
+}
+
+// .form-control {
+//   padding-right: 30px;  /* Make room for the icon */
+// }
+
+
 
 .date,
 .details {
@@ -257,4 +273,13 @@ font-size: 22px;
   .your-specific-button {
     --bs-btn-hover-bg: green;
   }
+  
+  ::ng-deep .larger-autocomplete .cdk-overlay-pane {
+    width: 400px !important;
+  }
+
+  .mat-autocomplete-panel.custom-autocomplete {
+    width: 300px !important; /* Adjust the width as needed */
+  }
+  
   

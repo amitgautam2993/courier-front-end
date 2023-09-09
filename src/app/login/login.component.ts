@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { storeUserDetails } from '../localStorageService';
 import { ApiService } from '../apiservice.services';
 import { environment } from 'src/environments/environment';
@@ -36,7 +36,7 @@ export class LoginComponent {
 
         if (resultData.status) 
         {
-          var user = resultData.userDetails;
+          let user = resultData.userDetails;
           storeUserDetails(user)
           this.authService.setToken(resultData.token);
           this.dialog.closeAll();
@@ -47,7 +47,6 @@ export class LoginComponent {
         else
          {
           alert("Incorrect Email or Password");
-          //console.log("Errror login");
         }
       });
     }

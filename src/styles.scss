@@ -93,4 +93,7 @@ input:not([type="search"]):not([type="date"]),textarea {
   font-weight: bold !important;
 
 }
-
+::ng-deep .ng-invalid.ng-dirty,
+.ng-invalid.ng-touched {
+  border-color: red !important;
+}

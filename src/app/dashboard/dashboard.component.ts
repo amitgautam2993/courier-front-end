@@ -2,12 +2,11 @@ import { Component,OnInit,EventEmitter,Output } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { MatDialog, MatDialogRef,MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { removeUserDetails } from '../localStorageService';
-import { getUserDetails } from '../localStorageService';
+import { removeUserDetails, getUserDetails } from '../localStorageService';
 import { ApiService } from '../apiservice.services';
 import { CustomSnackbarService } from '../custom-snackbar.service';
 
@@ -35,26 +34,20 @@ onCardHover(isHovered: boolean): void {
    async ngOnInit() {
     this.header=`${getUserDetails().firstname.toUpperCase()} ${getUserDetails().lastname.toUpperCase()}`
 
-    //await new Promise(resolve => setTimeout(resolve, 1000));
     this.getCards();
 
   }
    async getCards() {
     this.loading=true
-    const abc=getUserDetails()
-    //console.log(abc)
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // this.http.get<any>(`http://localhost:9002/companies/get?username=${getUserDetails().username}`).subscribe(data => 
     this.apiService.getCompanies(getUserDetails().username).subscribe(data =>{
       if(data.length!=0){
       this.cards = data[0].companies;      
       this.filteredCards = data[0].companies;}
       else{
         this.customSnackbarService.openSnackBar('Please Start Adding Company', 'info');
-      // this._snackBar.open('Please Start Adding Company','Dismiss',{
-      //   duration:3000
-      // })
+   
     }
 
     });
@@ -72,17 +65,12 @@ onCardHover(isHovered: boolean): void {
   onEditClick(data: any){
     this.customSnackbarService.openSnackBar('Not Allowed Please Contact Admin', 'info');
 
-    // this._snackBar.open('Not Allowed Please Contact Admin', 'Dismiss', {
-    //   duration: 3000
-    // });
 
   
   }
   ondeleteClick(data: any){
     this.customSnackbarService.openSnackBar('Not Allowed Please Contact Admin', 'info');
-    // this._snackBar.open('Not Allowed Please Contact Admin', 'Dismiss', {
-    //   duration: 3000
-    // });
+
 
   }
   //logout
@@ -119,15 +107,10 @@ this.router.navigate(['/cards', card._id],{ state: { 'cardData': card }});
       }
     }).afterClosed().subscribe(res=>{
               if(res.status==200){
-              //console.log(`Dialog result: ${res}`);
               this.getCards();}
 
     })
-    // const dialogRef = this.dialog.open(ModalDashboardComponent);
-    
-    //   dialogRef.afterClosed().subscribe(result => {
-    //     console.log(`Dialog result: ${result}`);
-    //   });
+
   }
 
 }
@@ -138,75 +121,6 @@ this.router.navigate(['/cards', card._id],{ state: { 'cardData': card }});
   styleUrls: ['./dashboard.component.scss'],
 })
 
-// export class ModalDashboardComponent{
-// email: string='';
-// owner:string='';
-// company:string='';
-// address:string='';
-// shippercode:string='';
-
-//   constructor(private _snackBar: MatSnackBar,private http: HttpClient,private dialogRef: MatDialogRef<ModalDashboardComponent>) {}
-//   @Output() getCards = new EventEmitter<any>();
-
-// onsubmit(){
-//   let bodyData = {
-//     Companyname: this.company,
-//     Ownername: this.owner,
-
-//     email: this.email,
-    
-//     address: this.address,
-//     shippercode:this.shippercode
-
-//   };
-//   this.http.post("http://localhost:9002/companies/create", bodyData).subscribe((resultData: any) => {
-
-//   console.log('Status:', resultData.status);
-//       if (resultData.status==200) { 
-//         this._snackBar.open(resultData.message, 'Dismiss',{
-//           duration: 3000
-//         });
-//         this.close();
-//         this.getCards.emit();
-//        }
-//       if (resultData.status==400){
-//         this._snackBar.open(resultData.message, 'Dismiss',{
-//           duration: 4000
-//         });     
-         
-//       }
-//       else{
-        
-//         this._snackBar.open(resultData.message, 'Dismiss',{
-//           duration: 4000
-//         });     
-//       }
-//     },(error)=>{
-//       if (error.status === 400) {
-//         // Handle error scenario (status 400)
-//         this._snackBar.open(error.error.message, 'Dismiss',{
-//           duration: 4000,
-//       //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-//       // verticalPosition: 'top',
-//       panelClass: ['custom-snackbar']
-//         });  
-//       } else {
-//         // Handle other error scenarios (status 500, 404, etc.)
-        
-//         this._snackBar.open(error.error.message, 'Dismiss',{
-//           duration: 4000,
-         
-//         });  
-//       }
-//     });
-// }
-
-
-//   close(): void {
-//     this.dialogRef.close();
-//   }
-
-// }
 export class ModalDashboardComponent{
   form: FormGroup;
 
@@ -237,9 +151,7 @@ export class ModalDashboardComponent{
     if (this.form.invalid || this.form.value.company === '' || this.form.value.firstname === '' || this.form.value.email === '' || this.form.value.address === '' || this.form.value.shippercode === '') {
       // Display an error message for empty or invalid fields
       this.customSnackbarService.openSnackBar('Please fill in all the required fields', 'info');
-      // this._snackBar.open('Please fill in all the required fields', 'Dismiss', {
-      //   duration: 4000
-      // });
+   
       return;
     }
 
@@ -259,42 +171,29 @@ export class ModalDashboardComponent{
 
     this.http.post(`/companies/create/${getUserDetails().username}`, bodyData).subscribe(
       (resultData: any) => {
-       // console.log(bodyData)
-        //console.log('Status:', resultData.status);
+   
         if (resultData.status == 200) {
           this.customSnackbarService.openSnackBar(resultData.message, 'success');
-          // this._snackBar.open(resultData.message, 'Dismiss', {
-          //   duration: 3000
-          // });
+      
           this.dialogRef.close(resultData); // Pass the response data to the parent component
-          //this.getCards.emit();
         } else if (resultData.status == 400) {
           this.customSnackbarService.openSnackBar(resultData.message, 'error');
-          // this._snackBar.open(resultData.message, 'Dismiss', {
-          //   duration: 4000
-          // });
+    
         } else {
           this.customSnackbarService.openSnackBar(resultData.message, 'error');
-          // this._snackBar.open(resultData.message, 'Dismiss', {
-          //   duration: 4000
-          // });
+  
         }
       },
       (error) => {
         if (error.status === 400) {
           // Handle error scenario (status 400)
-          this.customSnackbarService.openSnackBar(error.error.message, 'error');
-          // this._snackBar.open(error.error.message, 'Dismiss', {
-          //   duration: 3000,
-          //   panelClass: ['custom-snackbar']
-          // });
+          this.customSnackbarService.openSnackBar(error.error.message, 'info');
+
         } else {
 
           // Handle other error scenarios (status 500, 404, etc.)
           this.customSnackbarService.openSnackBar(error.error.message, 'error');
-          // this._snackBar.open(error.error.message, 'Dismiss', {
-          //   duration: 3000
-          // });
+
         }
       }
     );

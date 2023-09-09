@@ -1,13 +1,5 @@
-<mat-toolbar color="primary">
-    <span ><button mat-raised-button (click)="backtodashboard()" >Back</button> </span>
+<app-mat-toolbar></app-mat-toolbar>
 
-    <span style="flex: 1; display: flex; justify-content: center;">
-        <h1>{{header}}</h1>
-    </span>
-    <span ><button mat-raised-button color="accent"(click)="logout()">logout</button></span>
-   
-   
-</mat-toolbar>
 <mat-toolbar fxLayout="row" fxLayoutAlign="start center">
     
    <span fxFlex="auto"><h6><b>Company Name:</b> </h6>{{cardData.company}}</span>
@@ -79,7 +71,7 @@
         <tr style="cursor: pointer;" (mouseenter)="onRowHover(record, true)" (mouseleave)="onRowHover(record, false)">
             <td>{{ i+1 }}</td> 
             <td>
-              <span class="link" (click)="trackModal(record)">{{ record.cnumber }}</span>
+              <span class="link" (click)="trackModal(record)" matTooltip="Click to Track"  matTooltipPosition="above">{{ record.cnumber }}</span>
               <span style="text-transform: uppercase;"> - {{record.couriercode}}</span>
             </td>
             <!-- <td class="link" (click)="trackModal(record)">{{ record.cnumber }} - {{ record.couriercode }}</td> -->
@@ -94,8 +86,8 @@
           <td style="text-align: left;">
             {{ record.amount }}.00
             <ng-template #editButton>
-              <mat-icon class="mat-icon-large edit-icon" (click)="editModal(record)" matTooltip="Edit" matTooltipPosition="above">edit</mat-icon>
-              <mat-icon class="mat-icon-large delete-icon" (click)="deleteModal(record)" matTooltip="Delete" matTooltipPosition="above">delete</mat-icon>
+              <mat-icon class="mat-icon-large edit-icon" (click)="editModal(record)" matTooltip="Edit {{record.cnumber}}" matTooltipPosition="above">edit</mat-icon>
+              <mat-icon class="mat-icon-large delete-icon" (click)="deleteModal(record)" matTooltip="Delete {{record.cnumber}}" matTooltipPosition="above">delete</mat-icon>
             </ng-template>
             <ng-container *ngIf="selectedRow === record">
               <ng-container *ngTemplateOutlet="editButton"></ng-container>

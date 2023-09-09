@@ -1,6 +1,6 @@
 <div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
   <mat-toolbar color="primary">
-    <h4 class="modal-title">Edit Record</h4>
+    <h4 class="modal-title">{{header}} : {{shipperCode}}</h4>
     <span class="spacer"></span>
     <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" (click)="onCancelClick()">
       <span aria-hidden="true">&times;</span>
@@ -70,6 +70,7 @@
   </form>
   <div class="modal-content">
     <div class="modal-footer">
+      <button  color="warn" *ngIf="header=='Edit Record For Duplicate CNumber'" type="button" class="btn btn-danger" (click)="onDeleteClick()" style="margin-right: 350px;">Delete</button>
       <button type="button" class="btn btn-primary" (click)="onSaveClick()" [disabled]="form.invalid"> Save</button>
       <button type="button" class="btn btn-secondary" (click)="onCancelClick()" style="margin-left: 10px;">Cancel</button>
     </div>
