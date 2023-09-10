@@ -149,7 +149,7 @@ export class CompanyDetailsComponentComponent implements OnInit {
     return `${month} ${year}`;
   }
   fetchCourierData() {
-    if (this.toDate.length > 0) {
+    if (this.toDate!=undefined) {
 
       const endpoint = `/courierdata/daterange/${this.shippercode}?from=${this.fromDate}&to=${this.toDate}`;
       this.http.get<any>(endpoint).subscribe(data => {
@@ -1041,14 +1041,22 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
 
   }
   courierCodeChange(){
+    const cnumberValue = this.form.get('cnumber')?.value;
     const couriercodeValue = this.form.get('couriercode')?.value;
     if(couriercodeValue==='bluedart'){
       this.form.get('rate')?.setValue(800);
       this.form.get('type')?.setValue('NDOX');
     }
+    
     else{
-      this.form.get('rate')?.setValue(130);
+      if(cnumberValue[0].toLowerCase() === 'x'){
+      this.form.get('rate')?.setValue(400);
       this.form.get('type')?.setValue('NDOX');
+    }
+      else{
+        this.form.get('rate')?.setValue(130);
+        this.form.get('type')?.setValue('NDOX');
+      }
     }
    
 
@@ -1099,7 +1107,7 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
       // if (cnumberValue.toLowerCase().includes('x')) {
       if (cnumberValue[0].toLowerCase() === 'x') {
 
-
+        console.log('rate:400');
         this.form.get('rate')?.setValue(400);
         this.form.get('couriercode')?.setValue('dtdc');
         this.form.get('type')?.setValue('NDOX');
