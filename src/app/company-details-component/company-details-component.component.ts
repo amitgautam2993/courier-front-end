@@ -836,6 +836,7 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
 
       // Update the field with the uppercase value
       this.input3.nativeElement.value = uppercaseValue;
+      this.availableDestinations = []
     });
     this.input4.nativeElement.addEventListener('focusout', () => {
       // Convert the value to uppercase
@@ -1031,7 +1032,8 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
           this.availableDestinations = results.slice(0, 10);
         }
         else {
-          this.availableDestinations = []
+          this.availableDestinations = [];
+
 
         }
       
@@ -1194,24 +1196,32 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
       return;
     }
 
-
+    const destinationControl = this.form.get('destination')!;
+const destinationValue = destinationControl.value;
+if (!destinationValue) {
+  // If destination is blank, set it to a default value
+  destinationControl.setValue('DefaultDestination');
+}
     const dateValue = this.form.get('date')?.value;
     // Get the current value of the date field
     const cnumber = this.form.get('cnumber')?.value;
-    const destination = this.form.get('destination')?.value;
+    const destination = this.form.get('destination')!.value;
     const type = this.form.get('type')?.value;
+    const couriercode = this.form.get('couriercode')?.value;
     this.form.get('cnumber')?.setValue(cnumber.toUpperCase());
     this.form.get('destination')?.setValue(destination.toUpperCase());
     this.form.get('type')?.setValue(type.toUpperCase());
-    this.form.get('couriercode')?.setValue(type.toLowerCase());
+    this.form.get('couriercode')?.setValue(couriercode.toLowerCase());
 
 
     this.form.get('amount')!.enable();
     const updatedRecord = this.form.value;
+    console.log(updatedRecord)
     let bodyData = {
       "cnumber": updatedRecord.cnumber,
       "date": updatedRecord.date,
-      "destination": this.setDestination,
+      // "destination": this.setDestination,
+      "destination": destinationControl.value, // Use the form control's value
       "type": updatedRecord.type,
       "pc": updatedRecord.pc,
       "rate": updatedRecord.rate,
@@ -1229,13 +1239,6 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
       //console.log(data)
       if (data.status == 200) {
         this.customSnackbarService.openSnackBar(data.message, 'success');
-
-        // this._snackBar.open(data.message,'Dismiss',{
-        //   duration: 4000,
-        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-        //   // verticalPosition: 'top',
-        //   panelClass: ['custom-snackbar']
-        // })
         const currentCN = this.form.get('cnumber')?.value;
         const newCN = this.incrementCN(currentCN);
         this.form.get('amount')!.disable();
@@ -1266,26 +1269,13 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
           this.renderer.selectRootElement(firstInputElement).select();
         }
         isError = true;
-        // this.customSnackbarService.openSnackBar(err.error.message + ' in ' + err.error.data.id + ' on ' + err.error.data.courierDetails.date.substring(8,10) + '-' + err.error.data.courierDetails.date.substring(5,7) + '-' + err.error.data.courierDetails.date.substring(0,4), 'error','Edit Record',
         this.customSnackbarService.openSnackBar(err.error.message, 'error', 'Edit Record',
           () => this.editModal(err.error.data));
-        // this._snackBar.open(err.error.message,'Dismiss',{
-        //   duration: 400000,
-        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-        //   // verticalPosition: 'top',
-        //   panelClass: ['custom-snackbar']
-        // })
+       
       }
       else {
         this.customSnackbarService.openSnackBar(err.error.message, 'error');
 
-
-        // this._snackBar.open(err.error.message,'Dismiss',{
-        //   duration: 4000,
-        //   //     horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-        //   // verticalPosition: 'top',
-        //   panelClass: ['custom-snackbar']
-        // })
       }
     })
     if (!isError) {

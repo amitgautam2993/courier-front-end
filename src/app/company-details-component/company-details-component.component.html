@@ -15,7 +15,6 @@
 <form [formGroup]="dateRange">
   <mat-form-field appearance="fill"  class="mat-form-field">
 
-    <!-- <mat-form-field appearance="fill"  class="mat-form-field" style="width: 150px;"> -->
       <mat-label>From Date</mat-label>
       <input type="search" matInput [matDatepicker]="picker1" formControlName="fromDate">
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -23,16 +22,14 @@
     </mat-form-field>
     <mat-form-field appearance="fill" class="mat-form-field">
 
-    <!-- <mat-form-field appearance="fill" class="mat-form-field" style="width: 150px;"> -->
       <mat-label>To Date</mat-label>
       <input type="search" matInput [matDatepicker]="picker2" formControlName="toDate">
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
   </form>
-  <!-- ... existing code ... -->
-  <!-- <input type="month" name="month" [(ngModel)]="selectedMonth" (change)="daterangeMonth()" >
-  <button mat-raised-button (click)="createModal()">Create</button> -->
+
+
   <button mat-raised-button (click)="createModal()">Create</button>
   <button mat-raised-button (click)="generatePDF()" [disabled]="!dataFound">Export PDF</button>
   <button mat-raised-button (click)="refresh()" [disabled]="!dataFound">Refresh</button>
@@ -74,7 +71,6 @@
               <span class="link" (click)="trackModal(record)" matTooltip="Click to Track"  matTooltipPosition="above">{{ record.cnumber }}</span>
               <span style="text-transform: uppercase;"> - {{record.couriercode}}</span>
             </td>
-            <!-- <td class="link" (click)="trackModal(record)">{{ record.cnumber }} - {{ record.couriercode }}</td> -->
           <td>{{ record.date | date: 'mediumDate' }}</td>
          
           <td>{{ record.destination }}</td>
@@ -105,74 +101,7 @@
   
   
   
-<!-- <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th class="date-header">
-            Date
-            <button class="btn btn-link" style="top: 4px;" (click)="sortData()">
-                <mat-icon>swap_vert</mat-icon>
-            </button>
-          </th>
-        <th>Name</th>
-        <th>Destination</th>
-        <th>Type</th>
-        <th>PC</th>
-        <th>Rate</th>
-        <th>Weight</th>
-        <th>Amount</th>
-        
-        
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let record of filteredData" 
-      style="cursor: pointer;" (mouseover)="selectedRecord=record" (mouseout)="selectedRecord=null">
-        <td>{{ record.id }}</td>
-        <td>{{ record.date | date: 'mediumDate' }}</td>
-        <td>{{ record.name }}</td>
-        <td>{{ record.dummy1 }}</td>
-        <td>{{ record.dummy2 }}</td>
-        <td>{{ record.dummy3 }}</td>
-        <td>{{ record.dummy4 }}</td>
-        <td>{{ record.dummy5 }}</td>
-        <td>
-            {{ record.amount }}
-            <ng-template #editButton>
-              <mat-icon class="mat-icon-small edit-icon" (click)="openModal(record)">edit</mat-icon>
-            </ng-template>
-            <ng-container *ngIf="selectedRecord === record && isHovered; else noEditButton">
-              <ng-container *ngTemplateOutlet="editButton"></ng-container>
-            </ng-container>
-          </td>
-      </tr>
-    </tbody>
-  </table> -->
-  
-  
-  
-  <!-- <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>
-          Date
-          <button class="btn btn-link" (click)="sortData()">
-            <mat-icon>swap_vert</mat-icon>
-          </button>
-        </th>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let record of filteredData">
-        <td>{{ record.id }}</td>
-        <td>{{ record.date | date: 'mediumDate' }}</td>
-        <td>{{ record.name }}</td>
-      </tr>
-    </tbody>
-  </table> -->
+
   
   
   
