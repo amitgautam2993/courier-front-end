@@ -1241,12 +1241,13 @@ if (!destinationValue) {
         this.customSnackbarService.openSnackBar(data.message, 'success');
         const currentCN = this.form.get('cnumber')?.value;
         const newCN = this.incrementCN(currentCN);
+        const rate = this.form.get('rate')?.value;
         this.form.get('amount')!.disable();
         this.form.reset();
         this.form.get('cnumber')?.setValue(newCN);
         this.form.get('date')?.setValue(dateValue);
         this.form.get('pc')?.setValue(1)
-        this.form.get('rate')?.setValue(130)
+        this.form.get('rate')?.setValue(rate)
         this.form.get('weight')?.setValue(0.1)
         this.form.get('ewaybill')?.setValue(0.00)
         isError = false;
