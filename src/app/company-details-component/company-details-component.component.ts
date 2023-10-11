@@ -16,6 +16,7 @@ import 'moment-timezone';
 import { CustomSnackbarService } from '../custom-snackbar.service';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -474,16 +475,34 @@ export class CompanyDetailsComponentComponent implements OnInit {
   }
 
   trackModal(record: any) {
-    this.dialog.open(trackingModalComapnyDetailComponent, {
-      disableClose: true,
-      height: '700px',
-      width: '500px',
-      panelClass: [],
-      data: record,
-    }).afterClosed().subscribe(res => {
-      this.refresh();
-  
-    },);
+     let ModalHeader  = ''
+    if(record.couriercode=='dtdc'){
+       ModalHeader='DTDC'
+       this.dialog.open(trackingModalComapnyDetailComponent, {
+        disableClose: true,
+        height: '700px',
+        width: '2500px',
+        panelClass: [],
+        data: {record,header:ModalHeader},
+      }).afterClosed().subscribe(res => {
+        this.refresh();
+    
+      },);
+    }
+    else{
+       ModalHeader='ANY'
+       this.dialog.open(trackingModalComapnyDetailComponent, {
+        disableClose: true,
+        height: '700px',
+        width: '500px',
+        panelClass: [],
+        data: {record,header:ModalHeader},
+      }).afterClosed().subscribe(res => {
+        this.refresh();
+    
+      },);
+    }
+   
   }
 
   deleteModal(record: any) {
@@ -536,6 +555,40 @@ export class deleteModalComapnyDetailComponent {
   }
 
 }
+@Component({
+  selector: 'modal-app-company-details-component',
+  templateUrl: './popup-modal-company.component.html',
+  styleUrls: ['./company-details-component.component.scss']
+})
+export class popUpModalComapnyDetailComponent implements OnInit{
+
+  header:any
+  responseData:any
+  parametervalue:any
+  constructor(private http: HttpClient, public dialogRef: MatDialogRef<popUpModalComapnyDetailComponent>,@Inject(MAT_DIALOG_DATA) public data: any){
+  this.header=data.header
+  this.parametervalue=data
+
+  }
+  ngOnInit(): void {
+    
+    if(this.header=='OFFICE DETAILS'){
+    this.http.get(`/api/trackings/realtime/officeDetails/${this.parametervalue.submitName}/${this.parametervalue.officeNAme}`).subscribe((response: any) => {
+    this.responseData=response
+
+    })
+  }
+else{
+  this.http.get(`/api/trackings/realtime/franchiseeDetails/${this.parametervalue.submitName}/${this.parametervalue.frName}`).subscribe((response: any) => {
+    console.log(response)
+    this.responseData=response
+
+    })
+}
+
+  }
+}
+
 
 @Component({
   selector: 'modal-app-company-details-component',
@@ -546,7 +599,8 @@ export class deleteModalComapnyDetailComponent {
 
 
 
-export class trackingModalComapnyDetailComponent implements OnInit {
+export class trackingModalComapnyDetailComponent implements OnInit, AfterViewInit{
+  dtdcModal:boolean=false
   trackingData: any;
   isLoading!: boolean;
   cnumber: string = '';
@@ -555,10 +609,24 @@ export class trackingModalComapnyDetailComponent implements OnInit {
   trackExpanded: boolean = true
   showCustomSpinner = true;
   couriercode: string = '';
-  constructor(private http: HttpClient, public dialogRef: MatDialogRef<trackingModalComapnyDetailComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.cnumber = data.cnumber
-    this.couriercode = data.couriercode
+  header:any
+  imageMappings: { [key: string]: string } = {};
+  @ViewChild('offURLElement', { static: false }) offURLElement: ElementRef | null = null;
+  constructor(private sanitizer: DomSanitizer,public dialog: MatDialog,private el: ElementRef, private renderer: Renderer2,private http: HttpClient, public dialogRef: MatDialogRef<trackingModalComapnyDetailComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+    console.log(data)
+    this.header=data.header
+    this.cnumber = data.record.cnumber
+    this.couriercode = data.record.couriercode
+    this.imageMappings["pages\\resources\\images\\van_icn.png"] = "https://www.freeiconspng.com/uploads/truck-icon-16.png";
+    this.imageMappings["pages\\resources\\images\\flight_icn.png"] = "https://www.freeiconspng.com/uploads/airplane-icon-image-gallery-1.png";
+    this.imageMappings["pages\\resources\\images\\train_icn.png"] = "https://www.freeiconspng.com/uploads/train-icon-16.png";
+    this.imageMappings["pages\\resources\\images\\machine.png"] = "https://www.freeiconspng.com/uploads/airport-baggage-icon-png-2.png";
+
   }
+  sanitizeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+  
 
   toggleDestination() {
     this.destinationExpanded = !this.destinationExpanded;
@@ -570,7 +638,51 @@ export class trackingModalComapnyDetailComponent implements OnInit {
   toggleTrack() {
     this.trackExpanded = !this.trackExpanded;
   }
+
+  handleAnchorClick(event: Event) {
+    const target = event.target as HTMLElement;
+    const anchorValue = target.innerText;
+    if (target && target.tagName === 'A' && target.classList.contains('offURL')) {
+      const payload = {
+        submitName: 'getOfficeDetTR',
+        officeNAme:anchorValue,
+        name:anchorValue,
+        header:'OFFICE DETAILS'
+      } 
+  
+      this.popupModal(payload)
+    } else if (target && target.tagName === 'A' && target.classList.contains('frURL')) {
+      const anchorId = target.getAttribute('id');
+      const payload = {
+        submitName: 'getFranchiseeDetTR',
+        frName:anchorId,
+        name:anchorValue,
+        header:'FRANCHISEE DETAILS'
+
+      }
+      
+      this.popupModal(payload)
+    }
+  }
+  
+  popupModal(ele: any) {
+
+    this.dialog.open(popUpModalComapnyDetailComponent, {
+      autoFocus: true,
+      minHeight: '315px',
+      width: '380px',
+      panelClass: [],
+      disableClose: true,
+      data: ele
+    }).afterClosed().subscribe(res => {
+      //console.log(`Dialog result: ${res}`);
+      // this.getCards();
+    },);
+
+  }
+  
   ngOnInit() {
+
     this.isLoading = true;
     let bodyData = {
       "tracking_number": this.cnumber,
@@ -579,12 +691,15 @@ export class trackingModalComapnyDetailComponent implements OnInit {
       // "carrier_code": "dtdc"
     };
     //console.log(bodyData)
+    if(this.header=='ANY'){
+      this.dtdcModal=false
     this.http.post("/api/trackings/realtime", bodyData)
       .subscribe(
         (response) => {
           // Handle the response here
           this.trackingData = response
           this.isLoading = false;
+
         },
         (error) => {
           this.isLoading = false;
@@ -592,7 +707,53 @@ export class trackingModalComapnyDetailComponent implements OnInit {
           console.error(error);
         }
       );
+    }
+    else{
+      this.dtdcModal=true
+      this.http.get(`/api/trackings/realtime/shipmenthistory/${this.cnumber}`)
+      .subscribe(
+        (response) => {
+         
+          this.trackingData = response
+          this.replaceImageSourcesForArray(this.trackingData); // Replace image sources for the array
+          this.isLoading = false;
+
+       
+        },
+        (error) => {
+          this.isLoading = false;
+          // Handle errors here
+          console.error(error);
+        }
+      );
+
+    }
+
   }
+
+  private replaceImageSourcesForArray(data: any[]) {
+    data.forEach((item) => {
+      this.replaceImageSources(item);
+    });
+  }
+
+  private replaceImageSources(item: any) {
+    for (const source in this.imageMappings) {
+      if (this.imageMappings.hasOwnProperty(source)) {
+        const regex = new RegExp(`<img.*?src=['"]${source.replace(/\\/g, '\\\\')}['"]`, 'g');
+        if (item.connection) {
+          item.connection = item.connection.replace(regex, (match: string) =>
+            match.replace(source, this.imageMappings[source])
+          );
+        }
+      }
+    }
+  }
+  
+  ngAfterViewInit() {
+  
+  }
+
 
   onCancelClick() {
     this.dialogRef.close();
@@ -772,6 +933,8 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
   availableDestinations: any[] = [];
   setDestination: string = ''
   toolTipCity: any = ''
+  cnumber: string = ''
+  hideFrplus: boolean = false
   @ViewChild('input1') input1!: ElementRef<HTMLInputElement>;
   @ViewChild('input2') input2!: ElementRef<HTMLInputElement>;
   @ViewChild('input3') input3!: ElementRef<HTMLInputElement>;
@@ -790,22 +953,35 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
   }
 
   addCodes() {
-    this.dialog.open(codeModalComapnyDetailComponent, {
-      autoFocus: true,
-      height: '200px',
-      width: '380px',
+    let ModalHeader  = 'DTDC'
+    this.cnumber= this.form.get('cnumber')?.value
+    this.dialog.open(trackingModalComapnyDetailComponent, {
+      disableClose: true,
+      height: '700px',
+      width: '2500px',
       panelClass: [],
-
+      data: {header:ModalHeader,record:{cnumber:this.cnumber}},
     }).afterClosed().subscribe(res => {
+          this.input1.nativeElement.focus();
 
-      console.log(`Dialog result: ${res}`);
-      this.form.get('destination')?.setValue(res);
-      this.availableDestinations = []
-      this.input4.nativeElement.focus();
-
-
-
+  
     },);
+    // this.dialog.open(codeModalComapnyDetailComponent, {
+    //   autoFocus: true,
+    //   height: '200px',
+    //   width: '380px',
+    //   panelClass: [],
+
+    // }).afterClosed().subscribe(res => {
+
+    //   console.log(`Dialog result: ${res}`);
+    //   this.form.get('destination')?.setValue(res);
+    //   this.availableDestinations = []
+    //   this.input4.nativeElement.focus();
+
+
+
+    // },);
 
   }
 
@@ -1048,12 +1224,14 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
     if(couriercodeValue==='bluedart'){
       this.form.get('rate')?.setValue(800);
       this.form.get('type')?.setValue('NDOX');
+      this.hideFrplus=false;
     }
     
     else{
       if(cnumberValue[0].toLowerCase() === 'x'){
       this.form.get('rate')?.setValue(400);
       this.form.get('type')?.setValue('NDOX');
+      this.hideFrplus=true;
     }
       else{
         this.form.get('rate')?.setValue(130);
@@ -1114,6 +1292,7 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
         this.form.get('couriercode')?.setValue('dtdc');
         this.form.get('type')?.setValue('NDOX');
         this.availableCourierCode = ['dtdc','bluedart','delhivery','trackon'];
+        this.hideFrplus=true;
 
       }
       // Check for numbers, if needed
@@ -1122,6 +1301,7 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
         this.form.get('couriercode')?.setValue('bluedart');
         this.form.get('type')?.setValue('NDOX');
         this.availableCourierCode = ['bluedart','delhivery','dtdc', 'trackon'];
+        this.hideFrplus=false;
 
         // Do something for numbers
       }
@@ -1130,6 +1310,7 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
         this.form.get('couriercode')?.setValue('dtdc');
         this.form.get('type')?.setValue('NDOX');
         this.availableCourierCode = ['dtdc','bluedart','delhivery','trackon'];
+        this.hideFrplus=true;
 
       }
       else {
@@ -1137,6 +1318,8 @@ export class createModalComapnyDetailComponent implements AfterViewInit {
         this.form.get('couriercode')?.setValue('');  // Reset the field to its initial state
         this.form.get('type')?.setValue('');
         this.availableCourierCode = ['dtdc', 'trackon', 'bluedart'];
+        this.hideFrplus=false;
+
 
 
 

@@ -101,7 +101,9 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "pages/resources/images/van_icn.png",
+              "src/icons/pages/resources/images/van_icn.png"
             ],
             "styles": [
               "src/styles.scss"

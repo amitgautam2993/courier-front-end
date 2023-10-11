@@ -68,8 +68,8 @@
 
 .icon-search {
   position: absolute;
-  right: 5px;
-  top: 60%;
+  left: 43%;
+  top: 27%;
   transform: translateY(-50%);
 }
 
@@ -225,6 +225,9 @@ label {
   background-size: 50px;
   background-position: center;
 }
+.frURL{
+  cursor: pointer!important;
+}
 // .custom-snackbar {
 //   font-size: 16px !important;
 //   background-color: green !important; /* Set the desired background color */
@@ -282,4 +285,32 @@ font-size: 22px;
     width: 300px !important; /* Adjust the width as needed */
   }
   
-  
+  .custom-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .custom-table th, .custom-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .custom-table th {
+    background-color: #f2f2f2;
+  }
+
+  .custom-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  .custom-table tr:hover {
+    background-color: #e0e0e0;
+  }
+
+  .custom-table caption {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+

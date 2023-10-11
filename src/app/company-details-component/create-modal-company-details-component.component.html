@@ -14,6 +14,9 @@
       <div class="col-md-6 form-group">
         <label for="cnumber">C/NO.</label>
         <input #input1 type="text" class="form-control dark-input" id="cnumber" formControlName="cnumber" cdkFocusInitial (keydown)="addEventListeners()" [ngClass]="{'ng-invalid': form.controls['cnumber'].invalid && (form.controls['cnumber'].dirty || form.controls['cnumber'].touched)}">
+        <span *ngIf="hideFrplus" class="icon-search" style="cursor: pointer;" (click)="addCodes()">
+          <mat-icon>search</mat-icon>
+        </span>
         <!-- <mat-error *ngIf="form.controls['cnumber'].hasError('required') && (form.controls['cnumber'].dirty || form.controls['cnumber'].touched)">
           CNO is required.
         </mat-error> -->

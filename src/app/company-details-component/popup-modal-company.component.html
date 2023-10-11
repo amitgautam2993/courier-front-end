@@ -1,0 +1,41 @@
+<div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;">
+    <mat-toolbar color="primary">
+      <h4 class="modal-title">{{header}}</h4>
+      <span class="spacer"></span>
+      <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </mat-toolbar>
+  </div>
+ <div class="modal-body p-3" *ngIf="header=='FRANCHISEE DETAILS'">
+    <div  class="details" style="border: 1px solid #ccc;border-radius: 5px; padding: 20px;margin: 10px;" *ngFor="let item of responseData">
+        <p><strong>FR Name:</strong> {{item.frName || 'Not available'}}</p>
+        <p><strong>City:</strong> {{item.cityName || 'Not available'}}</p>
+        <p><strong>State Name:</strong> {{item.stateName || 'Not available'}}</p>
+        <p><strong>Email:</strong> {{item.email || 'Not available'}}</p>
+        <p><strong>FR Address:</strong> {{item.frAddress || 'Not available'}}</p>
+        <p><strong>FR Code:</strong> {{item.frCode || 'Not available'}}</p>
+        <p><strong>Pincode:</strong> {{item.pincode || 'Not available'}}</p>
+        <p><strong>Phone:</strong> {{item.phone || 'Not available'}}</p>
+        <p><strong>Building Block:</strong> {{item.buildingBlock || 'Not available'}}</p>
+    
+
+   
+</div>
+</div>
+<div  *ngIf="header=='OFFICE DETAILS'">
+    <div class="details" style="border: 1px solid #ccc;border-radius: 5px; padding: 20px;margin: 10px;" *ngFor="let item of responseData">
+        <p><strong>Office Name:</strong> {{item.officeName || 'Not available'}}</p>
+        <p><strong>City:</strong> {{item.cityName || 'Not available'}}</p>
+        <p><strong>State Name:</strong> {{item.stateName || 'Not available'}}</p>
+        <p><strong>Email:</strong> {{item.email || 'Not available'}}</p>
+        <p><strong>Office Address:</strong> {{item.officeAddress || 'Not available'}}</p>
+        <p><strong>Office Code:</strong> {{item.officeCode || 'Not available'}}</p>
+        <p><strong>Pincode:</strong> {{item.pincode || 'Not available'}}</p>
+        <p><strong>Phone:</strong> {{item.phone || 'Not available'}}</p>
+        <p><strong>Building Block:</strong> {{item.buildingBlock || 'Not available'}}</p>
+    </div>
+
+
+</div>
+

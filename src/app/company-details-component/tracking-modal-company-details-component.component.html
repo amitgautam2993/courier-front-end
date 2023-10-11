@@ -1,7 +1,12 @@
 <div class="modal-container">
 <div class="modal-header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" style="cursor: all-scroll;" sticky>
     <mat-toolbar color="primary">
-      <h4 class="modal-title">Tracking Information</h4>
+      <h4 class="modal-title">Tracking Information {{header=='DTDC'?'From FRPLUS':''}}</h4>
+      <h4 style="margin-left: 5px;margin-top: 15px;" *ngIf="header==='DTDC'">
+        <a href="https://frplus.dtdc.com/default.asp" target="_blank">
+          <mat-icon style="color: white;">launch</mat-icon>
+        </a>
+      </h4>
       <span class="spacer"></span>
       <button mat-icon-button mat-dialog-close type="button" class="close" aria-label="Close" (click)="onCancelClick()">
         <span aria-hidden="true">&times;</span>
@@ -9,7 +14,7 @@
     </mat-toolbar>
   </div>
   
-  <div class="modal-content p-3">
+  <div class="modal-content p-3" *ngIf="!dtdcModal">
    
     
     <div *ngIf="isLoading;else dataContent" class="loading-container">
@@ -17,19 +22,12 @@
       <mat-spinner [ngClass]="{'custom-spinner': showCustomSpinner}"></mat-spinner>
     </div>
   
-    <ng-template #dataContent>
+    <ng-template #dataContent >
       <!-- Display tracking details -->
       <p><strong >Tracking Number: </strong>  {{ trackingData?.data?.items[0]?.tracking_number }}</p>
       <p><strong>Carrier: </strong> {{ trackingData?.data?.items[0]?.carrier_code.toUpperCase() }}</p>
       <p><strong>Status: </strong> <span [class.green]="trackingData?.data?.items[0]?.status === 'delivered'" [class.red]="trackingData?.data?.items[0]?.status !== 'delivered'">{{ trackingData?.data?.items[0]?.status.toUpperCase() }}</span></p>
-      
-      <!-- <h3>Origin Information</h3> -->
-      <!-- Display origin information -->
-      <!-- ... -->
-      
-      <!-- <h3>Destination Information</h3> -->
-      <!-- Display destination information -->
-      <!-- ... -->
+ 
       <h3 (click)="toggleDestination()" style="cursor: pointer;">
         Destination Information
         <span  class="material-icons expand-icon">{{ destinationExpanded ? 'expand_less' : 'expand_more' }}</span>
@@ -64,7 +62,6 @@
       <p><strong>Phone: </strong><span [class.green]="trackingData.data.items[0].origin_info.phone!==null" [class.red]="trackingData.data.items[0].origin_info.phone===null">{{trackingData.data.items[0].origin_info.phone===null?'Not Available' : trackingData.data.items[0].origin_info.phone}}</span></p>
       <p><strong>Carrier Code: </strong><span [class.green]="trackingData.data.items[0].origin_info.carrier_code!==null" [class.red]="trackingData.data.items[0].origin_info.carrier_code===null">{{trackingData.data.items[0].origin_info.carrier_code===null?'Not Available' : trackingData.data.items[0].origin_info.carrier_code}}</span></p>
       
-      <!-- <p><strong></strong><span [class.green]="trackingData.data.items[0].origin_info.!==null" [class.red]="trackingData.data.items[0].origin_info.===null">{{trackingData.data.items[0].origin_info.===null?'Not Available' : trackingData.data.items[0].origin_info.}}</span></p> -->
       
     </div>
       
@@ -96,4 +93,50 @@
       <!-- Close the modal -->
     </ng-template>
   </div>
+  <div class="modal-content p-3" *ngIf="dtdcModal">
+    
+      
+      <div *ngIf="isLoading;else dataContent" class="loading-container">
+        <!-- Loading indicator -->
+        <mat-spinner [ngClass]="{'custom-spinner': showCustomSpinner}"></mat-spinner>
+      </div>
+      <ng-template #dataContent >
+        <table class="custom-table">
+          <caption>Tracking Information from FRPLUS.com</caption>
+          <th>Action</th>
+          <th>Date | Time</th>
+          <th>Connection</th>
+          <th>Unique ID</th>
+          <th>ACTUAL|VOLUMETRIC(WEIGHT)	</th>
+          <tr *ngFor="let item of trackingData">
+            <td *ngIf="item.action!==''">{{item.action}}</td>
+            <td style="color: blue;" *ngIf="item.action===''">
+              <div style="cursor: pointer;" (click)="popupModal({submitName: 'getOfficeDetTR',
+              officeNAme:item.groupOffice,
+              name:item.groupOffice,
+              header:'OFFICE DETAILS'})"> 
+              {{item.originBranchCode!==''?item.groupOffice+ '('+ item.originBranchCode+')':item.groupOffice}}
+              </div>
+            </td>
+            <td [innerHTML]="item.date"></td>
+            <td>
+              <div style="cursor: pointer;" [innerHTML]="sanitizeHtml(item.connection)" (click)="handleAnchorClick($event)"></div>
+            </td>
+            <td *ngIf="item.fdmNumber==''&&item.manifestFlagCode==''&&item.manifestType==''&&item.uniqueNumber==''&&item.nodeId==''"></td>
+            <td *ngIf="item.fdmNumber==''&&item.manifestFlagCode==''&&item.manifestType==''&&item.uniqueNumber==''&&item.nodeId!=''"></td>
+            <td *ngIf="item.fdmNumber!=''&&item.manifestFlagCode==''&&item.manifestType==''&&item.uniqueNumber==''&&item.nodeId==''">{{item.fdmNumber}}</td>
+            <td *ngIf="item.fdmNumber!=''&&item.manifestFlagCode==''&&item.manifestType==''&&item.uniqueNumber==''&&item.nodeId!=''">{{item.fdmNumber}}</td>
+            <td *ngIf="item.fdmNumber==''&&item.manifestFlagCode!=''&&item.manifestType!=''&&item.uniqueNumber!=''&&item.nodeId!=''">{{item.manifestFlagCode}} {{item.uniqueNumber}}</td>
+            <td *ngIf="item.fdmNumber==''&&item.manifestFlagCode!=''&&item.manifestType!=''&&item.uniqueNumber!=''&&item.nodeId==''">{{item.manifestFlagCode}} {{item.uniqueNumber}}</td>
+            <td *ngIf="item.fdmNumber==''&&item.manifestFlagCode!=''&&item.manifestType!=''&&item.uniqueNumber==''&&item.nodeId==''">{{item.manifestFlagCode}}</td>
+            <td *ngIf="item.fdmNumber==''&&item.manifestFlagCode!=''&&item.manifestType!=''&&item.uniqueNumber==''&&item.nodeId!=''">{{item.manifestFlagCode}}</td>
+            <td *ngIf="item.fdmNumber!=''&&item.manifestFlagCode==''&&item.manifestType==''&&item.uniqueNumber!=''&&item.nodeId==''">{{item.uniqueNumber}}</td>
+            <td [innerHTML]="item.weight"></td>
+            <!-- fdmNumber  manifestFlagCode  manifestType  nodeId  uniqueNumber -->
+       </tr>
+        </table>
+      </ng-template>
+
+  </div>
+
 </div>

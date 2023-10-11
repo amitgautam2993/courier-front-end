@@ -48,6 +48,7 @@ import { MatToolbarComponent } from './mat-toolbar/mat-toolbar.component';
 import { DropdownMenuComponent } from './dropdown-menu/dropdown-menu.component';
 import {MatMenuModule} from '@angular/material/menu';
 import { NotificationMenuComponent } from './notification-menu/notification-menu.component';
+import { popUpModalComapnyDetailComponent } from './company-details-component/company-details-component.component';
 
 
 
@@ -71,7 +72,8 @@ import { NotificationMenuComponent } from './notification-menu/notification-menu
     codeModalComapnyDetailComponent,
     MatToolbarComponent,
     DropdownMenuComponent,
-    NotificationMenuComponent
+    NotificationMenuComponent,
+    popUpModalComapnyDetailComponent
   ],
   imports: [
     BrowserModule,
